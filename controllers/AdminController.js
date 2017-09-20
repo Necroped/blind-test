@@ -7,17 +7,17 @@ const
 // Restrict access to root page
 adminController.home = (req, res) => {
   if(req.user) {
-     res.render( 'index', { 
+     res.render( 'admin/index', { 
       admin : req.user 
     });
   } else {
-    res.render('login');   
+    res.render('admin/login');   
   }
 };
 
 // Go to registration page
 adminController.register = (req, res) => {
-  res.render('register');
+  res.render('admin/register');
 };
 
 // Post registration
@@ -28,20 +28,16 @@ adminController.doRegister = (req, res) => {
   req.body.password, 
   (err, admin) => {
     if (err) {
-      return res.render('register', { 
+      return res.render('admin/register', { 
         admin : admin 
       });
     }
-
-    passport.authenticate('local')(req, res, () => {
-      res.redirect('/admin/');
-    });
   });
 };
 
 // Go to login page
 adminController.login = (req, res) => {
-  res.render('login');
+  res.render('admin/login');
 };
 
 // Post login

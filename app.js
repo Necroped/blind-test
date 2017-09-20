@@ -8,6 +8,7 @@ const
   bodyParser    = require('body-parser'),
   mongoose      = require('mongoose'),
   passport      = require('passport'),
+  session       = require('express-session'),
   LocalStrategy = require('passport-local').Strategy;
   
 mongoose.Promise = global.Promise;
@@ -18,7 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(require('express-session')({
+app.use(session({
   secret:            'ITEventMacon',
   resave:            false,
   saveUninitialized: false
@@ -31,9 +32,19 @@ passport.use(new LocalStrategy(AdminModel.authenticate()));
 passport.serializeUser(AdminModel.serializeUser());
 passport.deserializeUser(AdminModel.deserializeUser());
 
+const PlayerModel = require('./models/PlayerModel');
 
 mongoose.connect('mongodb://localhost:27017/blind-quiz')
 .then(()     => console.log('connection succesful'))
+.catch((err) => console.error(err))
+.then(() => {
+  AdminModel.remove({}, function(err) { 
+    console.log('Admin base removed') 
+  });  
+  PlayerModel.remove({}, function(err) { 
+    console.log('Player base removed') 
+  });
+})
 .catch((err) => console.error(err))
 .then(() => {
   AdminModel.register( new AdminModel({ 
@@ -42,9 +53,9 @@ mongoose.connect('mongodb://localhost:27017/blind-quiz')
   'admin', 
   (err, admin) => {
     if (err) {
-      console.log('trouble when adding admin to DB');
+      console.log(`Error when adding admin to DB : ${err}`);
     } else  {
-      console.log('admin added to DB');
+      console.log('Admin added to DB');
     }
   });
 })
@@ -53,8 +64,15 @@ const
   AdminRoutes  = require('./routes/AdminRoutes'),
   PlayerRoutes = require('./routes/PlayerRoutes');
 
-app.use('/', PlayerRoutes);
+
+// catch 404 and forward to error handler
+app.get('/', (req, res, next) => {
+  res.redirect('/player');
+});
+
+app.use('/player', PlayerRoutes);
 app.use('/admin', AdminRoutes);
+
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

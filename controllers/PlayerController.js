@@ -2,43 +2,51 @@ const
   mongoose         = require("mongoose"),
   passport         = require("passport"),
   Player           = require("../models/PlayerModel"),
+  session          = require("express-session"),
   playerController = {};
 
 // Restrict access to root page
 playerController.home = (req, res) => {
-  res.render( 'index', { 
-    playername : req.playername 
-  });
-};
-
-// Post registration
-playerController.doRegister = (req, res) => {
-  Player.register(new Player({ 
-    playername : req.body.playername,
-    score : 0
-  }),
-  (err, player) => {
-    if (err) {
-      return res.render('register', { 
-        player : player 
-      });
-    }
-
-    passport.authenticate('local')(req, res, () => {
-      res.redirect('/');
+  if(req.session.playerID) {
+    Player.findOne({
+      _id:      req.session.playerID
+    }, (err, player) => {
+      if (err) {
+        return res.render('player/login');
+      } else {
+        return res.render('player/index', { 
+          player : player 
+        });
+      }
     });
-  });
+  } else {
+    res.render('player/login');   
+  }
 };
 
 // Go to login page
 playerController.login = (req, res) => {
-  res.render('login');
+  res.render('player/login');
 };
 
 // Post login
 playerController.doLogin = (req, res) => {
-  passport.authenticate('local')(req, res, () => {
-    res.redirect('/');
+  new Player({ 
+    username:  req.body.username,
+    score:     0,
+    connected: true
+  })
+  .save(function (err, player) {
+    if (err) {
+      return res.render('error', {
+        error : err
+      });
+    } else {
+      req.session.playerID = player.id;
+      return res.render('player/index', { 
+        player : player 
+      });
+    }
   });
 };
 

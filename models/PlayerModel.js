@@ -1,14 +1,13 @@
 const
   mongoose              = require('mongoose'),
-  Schema                = mongoose.Schema,
-  passportLocalMongoose = require('passport-local-mongoose');
+  Schema                = mongoose.Schema;
 
 const PlayerSchema = new Schema({
-    playername : String,
-    score : Integer
+    username:  String,
+    score:     Number,
+    connected: Boolean,
+    teamId:    String
 });
-
-PlayerSchema.plugin( passportLocalMongoose );
 
 let Player;
 if( mongoose.models.Player ) {
