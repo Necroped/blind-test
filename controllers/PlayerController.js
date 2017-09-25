@@ -1,7 +1,10 @@
 const
   mongoose         = require("mongoose"),
   passport         = require("passport"),
-  Player           = require("../models/PlayerModel"),
+  Admin            = require("../models/AdminModel").Model,
+  AdminSchema      = require("../models/AdminModel").Schema,
+  Player           = require("../models/PlayerModel").Model,
+  PlayerSchema     = require("../models/PlayerModel").Schema,
   session          = require("express-session"),
   playerController = {};
 
@@ -12,21 +15,25 @@ playerController.home = (req, res) => {
       _id:      req.session.playerID
     }, (err, player) => {
       if (err) {
-        return res.render('player/login');
+        res.redirect('/player/login');
       } else {
-        return res.render('player/index', { 
+        res.render('player/index', { 
           player : player 
         });
       }
     });
   } else {
-    res.render('player/login');   
+    res.redirect('/player/login');   
   }
 };
 
 // Go to login page
 playerController.login = (req, res) => {
-  res.render('player/login');
+  if(!req.session.playerID) {
+    res.render('player/login');
+  } else {
+    res.redirect('/player');
+  }
 };
 
 // Post login
@@ -38,14 +45,12 @@ playerController.doLogin = (req, res) => {
   })
   .save(function (err, player) {
     if (err) {
-      return res.render('error', {
+      res.render('error', {
         error : err
       });
     } else {
       req.session.playerID = player.id;
-      return res.render('player/index', { 
-        player : player 
-      });
+      res.redirect('/player');
     }
   });
 };
@@ -55,5 +60,17 @@ playerController.logout = (req, res) => {
   req.logout();
   res.redirect('/');
 };
+
+// Restrict access to root page
+playerController.all = (req, res) => {
+  Player.find((err, players) => {
+    if(err)  {
+      res.send(err);
+    }
+    console.log(players);
+    res.json({'data': players});
+  });
+};
+
 
 module.exports = playerController;

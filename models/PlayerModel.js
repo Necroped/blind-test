@@ -16,4 +16,17 @@ if( mongoose.models.Player ) {
   Player = mongoose.model( 'Player', PlayerSchema );
 }
 
-module.exports = Player;
+PlayerSchema.pre('save', function (next) {
+  this._wasnew = this.isNew;
+  next();
+});
+PlayerSchema.post('save', function () {
+  if (this._wasnew) this.emit('new')
+  else this.emit('update');
+});
+
+
+module.exports = {
+  Model:  Player,
+  Schema: PlayerSchema
+};

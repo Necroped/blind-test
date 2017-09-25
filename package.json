@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./app"
   },
   "dependencies": {
     "body-parser": "~1.17.1",
@@ -17,6 +17,7 @@
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^4.1.0",
-    "serve-favicon": "~2.4.2"
+    "serve-favicon": "~2.4.2",
+    "socket.io": "^2.0.3"
   }
 }

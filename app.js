@@ -1,6 +1,11 @@
 const
   express       = require('express'),
-  app           = express();
+  app           = express(),
+  debug  = require( 'debug' )( 'blind-quiz:server' ),
+  http   = require( 'http' ),
+  server = http.createServer( app ),
+  io     = require('socket.io')(server);
+  port   = normalizePort( process.env.PORT || '3000' );
   path          = require('path'),
   favicon       = require('serve-favicon'),
   logger        = require('morgan'),
@@ -10,6 +15,72 @@ const
   passport      = require('passport'),
   session       = require('express-session'),
   LocalStrategy = require('passport-local').Strategy;
+
+
+  app.set( 'port', port );
+  
+  /**
+   * Listen on provided port, on all network interfaces.
+   */
+  server.listen( port );
+  server.on( 'error', onError );
+  server.on( 'listening', onListening );
+  
+  /**
+   * Normalize a port into a number, string, or false.
+   */
+  function normalizePort( val ) {
+    return isNaN( parseInt( val, 10 ) ) ? val : parseInt( val, 10 ) >= 0 ? parseInt( val, 10 ) : false
+  }
+  
+  /**
+   * Event listener for HTTP server "error" event.
+   */
+  function onError( error ) {
+    if ( error.syscall !== 'listen' ) {
+      throw error;
+    }
+  
+    const bind = ( typeof port === 'string' ? 'Pipe ' : 'Port ' ) + port;
+  
+    // handle specific listen errors with friendly messages
+    switch( error.code ) {
+      case 'EACCES':
+        console.error( bind + ' requires elevated privileges' );
+        process.exit( 1 );
+      break;
+      case 'EADDRINUSE':
+        console.error( bind + ' is already in use' );
+        process.exit( 1 );
+      break;
+      default:
+        throw error;
+    }
+  }
+  
+  /**
+   * Event listener for HTTP server "listening" event.
+   */
+  function onListening() {
+    const addr = server.address();
+    const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+    debug( 'Listening on ' + bind );
+  }
+  
+
+io.on('connection', (socket) => {
+  console.log('connected');
+  socket.on('connected', (data) => {
+    console.log('on connected');
+    io.to('admin_room').emit('player/new', {
+      username : data.username
+    });
+  });  
+  socket.on('admin/connected', (data) => {
+    console.log('on admin_connected');
+    socket.join('admin_room');
+  });
+});
   
 mongoose.Promise = global.Promise;
 app.set('views', path.join(__dirname, 'views'));
@@ -27,12 +98,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-const AdminModel = require('./models/AdminModel');
+const AdminModel = require('./models/AdminModel').Model;
 passport.use(new LocalStrategy(AdminModel.authenticate()));
 passport.serializeUser(AdminModel.serializeUser());
 passport.deserializeUser(AdminModel.deserializeUser());
 
-const PlayerModel = require('./models/PlayerModel');
+const PlayerModel = require('./models/PlayerModel').Model;
 
 mongoose.connect('mongodb://localhost:27017/blind-quiz')
 .then(()     => console.log('connection succesful'))
@@ -62,7 +133,8 @@ mongoose.connect('mongodb://localhost:27017/blind-quiz')
 
 const
   AdminRoutes  = require('./routes/AdminRoutes'),
-  PlayerRoutes = require('./routes/PlayerRoutes');
+  PlayerRoutes = require('./routes/PlayerRoutes'),
+  APIRoutes = require('./routes/APIRoutes');
 
 
 // catch 404 and forward to error handler
@@ -72,6 +144,7 @@ app.get('/', (req, res, next) => {
 
 app.use('/player', PlayerRoutes);
 app.use('/admin', AdminRoutes);
+app.use('/api', APIRoutes);
 
 
 // catch 404 and forward to error handler

@@ -3,3 +3,8 @@ extends layout
 block content
   h1 Node.js, Express.js, Mongoose.js and Passport.js
   p #{player.username}
+  input#username_hidden(type='hidden', value=player.username)
+    
+block scripts
+  script(src='/socket.io/socket.io.js')
+  script(src='/javascripts/player.js')
