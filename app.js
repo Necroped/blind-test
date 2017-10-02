@@ -1,11 +1,11 @@
 const
   express       = require('express'),
   app           = express(),
-  debug  = require( 'debug' )( 'blind-quiz:server' ),
-  http   = require( 'http' ),
-  server = http.createServer( app ),
-  io     = require('socket.io')(server);
-  port   = normalizePort( process.env.PORT || '3000' );
+  debug         = require( 'debug' )( 'blind-quiz:server' ),
+  http          = require( 'http' ),
+  server        = http.createServer( app ),
+  io            = require('socket.io')(server);
+  port          = normalizePort( process.env.PORT || '3000' );
   path          = require('path'),
   favicon       = require('serve-favicon'),
   logger        = require('morgan'),
@@ -104,6 +104,7 @@ passport.serializeUser(AdminModel.serializeUser());
 passport.deserializeUser(AdminModel.deserializeUser());
 
 const PlayerModel = require('./models/PlayerModel').Model;
+const TeamModel   = require('./models/TeamModel').Model;
 
 mongoose.connect('mongodb://localhost:27017/blind-quiz')
 .then(()     => console.log('connection succesful'))
@@ -114,6 +115,9 @@ mongoose.connect('mongodb://localhost:27017/blind-quiz')
   });  
   PlayerModel.remove({}, function(err) { 
     console.log('Player base removed') 
+  });  
+  TeamModel.remove({}, function(err) { 
+    console.log('Team base removed') 
   });
 })
 .catch((err) => console.error(err))

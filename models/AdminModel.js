@@ -17,15 +17,6 @@ if( mongoose.models.Admin ) {
   Admin = mongoose.model( 'Admin', AdminSchema );
 }
 
-AdminSchema.pre('save', function (next) {
-  this._wasnew = this.isNew;
-  next();
-});
-AdminSchema.post('save', function () {
-  if (this._wasnew) this.emit('new')
-  else this.emit('update');
-});
-
 module.exports = {
   Model:  Admin,
   Schema: AdminSchema

@@ -5,22 +5,48 @@ const
   AdminSchema     = require("../models/AdminModel").Schema,
   Player          = require("../models/PlayerModel").Model,
   PlayerSchema    = require("../models/PlayerModel").Schema,
+  Team            = require("../models/TeamModel").Model,
+  TeamSchema      = require("../models/TeamModel").Schema,
   adminController = {};
 
 
 
 // Restrict access to root page
 adminController.home = (req, res) => {
-  if(req.user) {
-    Player.find((err, players) => {
-      res.render( 'admin/index', { 
-        admin : req.user,
-        players : players
+  res.render( 'admin/index', { 
+    admin:   req.user
+  });
+};
+
+// Restrict access to root page
+adminController.players = (req, res) => {
+  res.render( 'admin/players', { 
+    admin:   req.user
+  });
+};
+
+// Restrict access to root page
+adminController.teams = (req, res) => {
+  res.render( 'admin/teams', { 
+    admin:   req.user
+  });
+};
+
+// Restrict access to root page
+adminController.createTeam = (req, res) => {
+  new Team({ 
+    name:  req.body.name,
+    color: req.body.color
+  })
+  .save(function (err, team) {
+    if (err) {
+      res.render('error', {
+        error : err
       });
-    });
-  } else {
-    res.redirect('admin/login');   
-  }
+    } else {
+      res.redirect('/admin/teams');
+    }
+  });
 };
 
 // Go to registration page
@@ -31,13 +57,13 @@ adminController.register = (req, res) => {
 // Post registration
 adminController.doRegister = (req, res) => {
   Admin.register( new Admin({ 
-    username : req.body.username
+    username: req.body.username
   }), 
   req.body.password, 
   (err, admin) => {
     if (err) {
       res.redirect('/admin', { 
-        admin : admin 
+        admin: admin 
       });
     }
   });
