@@ -32,23 +32,6 @@ adminController.teams = (req, res) => {
   });
 };
 
-// Restrict access to root page
-adminController.createTeam = (req, res) => {
-  new Team({ 
-    name:  req.body.name,
-    color: req.body.color
-  })
-  .save(function (err, team) {
-    if (err) {
-      res.render('error', {
-        error : err
-      });
-    } else {
-      res.redirect('/admin/teams');
-    }
-  });
-};
-
 // Go to registration page
 adminController.register = (req, res) => {
   res.render('admin/register');

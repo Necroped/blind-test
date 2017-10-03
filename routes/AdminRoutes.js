@@ -1,39 +1,33 @@
-var express = require('express');
-var router = express.Router();
-var admin = require("../controllers/AdminController.js");
+const
+    express = require('express'),
+    router  = express.Router(),
+    admin   = require("../controllers/AdminController.js"),
+    team    = require("../controllers/TeamController.js");
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////// GET //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// restrict index for logged in user only
 router.get('/', isAuthenticated, admin.home);
 
-// restrict index for logged in user only
 router.get('/players', isAuthenticated, admin.players);
 
-// restrict index for logged in user only
 router.get('/teams', isAuthenticated, admin.teams);
 
-// route to register page
 router.get('/register', isAuthenticated, admin.register);
 
-// route for logout action
 router.get('/logout', isAuthenticated, admin.logout);
 
-// route to login page
 router.get('/login', admin.login);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////// POST //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// route for register action
 router.post('/register', isAuthenticated, admin.doRegister);
 
-router.post('/team/create', isAuthenticated, admin.createTeam);
+router.post('/team/create', isAuthenticated, team.create);
 
-// route for login action
 router.post('/login', admin.doLogin);
 
 

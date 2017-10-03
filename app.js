@@ -69,15 +69,12 @@ const
   
 
 io.on('connection', (socket) => {
-  console.log('connected');
   socket.on('connected', (data) => {
-    console.log('on connected');
     io.to('admin_room').emit('player/new', {
       username : data.username
     });
   });  
   socket.on('admin/connected', (data) => {
-    console.log('on admin_connected');
     socket.join('admin_room');
   });
 });
@@ -98,27 +95,22 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-const AdminModel = require('./models/AdminModel').Model;
+const 
+  AdminModel = require('./models/AdminModel').Model,
+  PlayerModel = require('./models/PlayerModel').Model,
+  TeamModel   = require('./models/TeamModel').Model;
+
 passport.use(new LocalStrategy(AdminModel.authenticate()));
 passport.serializeUser(AdminModel.serializeUser());
 passport.deserializeUser(AdminModel.deserializeUser());
-
-const PlayerModel = require('./models/PlayerModel').Model;
-const TeamModel   = require('./models/TeamModel').Model;
 
 mongoose.connect('mongodb://localhost:27017/blind-quiz')
 .then(()     => console.log('connection succesful'))
 .catch((err) => console.error(err))
 .then(() => {
-  AdminModel.remove({}, function(err) { 
-    console.log('Admin base removed') 
-  });  
-  PlayerModel.remove({}, function(err) { 
-    console.log('Player base removed') 
-  });  
-  TeamModel.remove({}, function(err) { 
-    console.log('Team base removed') 
-  });
+  AdminModel.remove({},  (err) => console.log('Admin base removed'));  
+  PlayerModel.remove({}, (err) => console.log('Player base removed'));  
+  TeamModel.remove({},   (err) => console.log('Team base removed'));
 })
 .catch((err) => console.error(err))
 .then(() => {
@@ -126,22 +118,14 @@ mongoose.connect('mongodb://localhost:27017/blind-quiz')
     username : 'admin'
   }), 
   'admin', 
-  (err, admin) => {
-    if (err) {
-      console.log(`Error when adding admin to DB : ${err}`);
-    } else  {
-      console.log('Admin added to DB');
-    }
-  });
+  (err, admin) => err ? console.log(`Error when adding admin to DB : ${err}`) : console.log('Admin added to DB'));
 })
 
 const
   AdminRoutes  = require('./routes/AdminRoutes'),
   PlayerRoutes = require('./routes/PlayerRoutes'),
-  APIRoutes = require('./routes/APIRoutes');
+  APIRoutes    = require('./routes/APIRoutes');
 
-
-// catch 404 and forward to error handler
 app.get('/', (req, res, next) => {
   res.redirect('/player');
 });
@@ -150,8 +134,6 @@ app.use('/player', PlayerRoutes);
 app.use('/admin', AdminRoutes);
 app.use('/api', APIRoutes);
 
-
-// catch 404 and forward to error handler
 app.use((req, res, next) => {
   const err = new Error('Not Found');
   err.status = 404;

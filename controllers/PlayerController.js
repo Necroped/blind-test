@@ -10,31 +10,23 @@ const
 
 // Restrict access to root page
 playerController.home = (req, res) => {
-  if(req.session.playerID) {
-    Player.findOne({
-      _id:      req.session.playerID
-    }, (err, player) => {
-      if (err) {
-        res.redirect('/player/login');
-      } else {
-        res.render('player/index', { 
-          player : player 
-        });
-      }
-    });
-  } else {
-    res.redirect('/player/login');   
-  }
-};
+  Player.findOne({
+    _id:      req.session.player._id
+  }, (err, player) => {
+    if (err) {
+      res.redirect('/player/login');
+    } else {
+      res.render('player/index', { 
+        player : player 
+      });
+    }
+  });
+}
 
 // Go to login page
 playerController.login = (req, res) => {
-  if(!req.session.playerID) {
-    res.render('player/login');
-  } else {
-    res.redirect('/player');
-  }
-};
+  res.render('player/login');
+}
 
 // Post login
 playerController.doLogin = (req, res) => {
@@ -49,7 +41,7 @@ playerController.doLogin = (req, res) => {
         error : err
       });
     } else {
-      req.session.playerID = player.id;
+      req.session.player = player;
       res.redirect('/player');
     }
   });
@@ -67,10 +59,38 @@ playerController.all = (req, res) => {
     if(err)  {
       res.send(err);
     }
-    console.log(players);
-    res.json({'data': players});
+    res.json({
+      'data': players
+    });
   });
 };
 
+// Restrict access to root page
+playerController.update = (req, res) => {
+  let action;
+  console.log(req.body.team_id);
+  if(req.body.team_id.length > 0) {
+    action = { 
+      $set: { 
+        team: req.body.team_id 
+      }
+    };
+  } else {
+    action = { 
+      $unset: { 
+        team: true 
+      }
+    };
+  }
+  Player.update({ 
+    _id: req.body.player_id 
+  }, 
+  action, 
+  (err, player) => {
+    res.json({
+      success : true
+    })
+  });
+};
 
 module.exports = playerController;

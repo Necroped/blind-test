@@ -3,8 +3,8 @@ extends layout
 block content
   h1 Teams
   form.form-inline(role='form', action='/admin/team/create', method='post')
-    input.form-control.mb-2.mr-sm-2.mb-sm-0(name='name', type='text', placeholder='Name')
-    input.form-control(name='color', type='text', placeholder='Color')
+    input.form-control.mb-2.mr-sm-2.mb-sm-0(name='name', type='text', placeholder='Name', required)
+    input.jscolor.form-control(name='color', type='text', placeholder='Color', required)
     button.btn.btn-primary(type='submit') Create team
   table.table.table-hover.table-striped.table-bordered#teamsTable(style='width:100%', cellspacing='0')
     thead
@@ -16,11 +16,14 @@ block content
 block csss
   link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.css')
   link(rel='stylesheet', href='https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css')
+  link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/jquery-minicolors/2.2.6/jquery.minicolors.min.css')
   link(rel='stylesheet', href='/stylesheets/style.css')
 
-
 block scripts
-  script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js', crossorigin='anonymous')
-  script(src='https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js', crossorigin='anonymous')
+  script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
+  script(src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js')
+  script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
+  script(src='https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js')
   script(src='/socket.io/socket.io.js')
-  script(src='/javascripts/admin.js') 
+  script(src='/javascripts/jscolor.min.js')
+  script(src='/javascripts/admin.js')
