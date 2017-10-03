@@ -5,10 +5,11 @@ const
     ObjectId = mongoose.Schema.ObjectId;
 
 const PlayerSchema = new Schema({
-    username:  { type : String , unique : true, required : true },
-    score:     { type : Number },
-    connected: { type : Boolean },
-    team:      { type : ObjectId, ref: 'TeamSchema' }
+    username:  { type: String , unique: true, required: true },
+    score:     { type: Number },
+    connected: { type: Boolean },
+    team:      { type: ObjectId, ref: 'TeamSchema' },
+    socket:    { type: String, unique: true}
 });
 
 let Player;

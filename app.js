@@ -67,18 +67,6 @@ const
     debug( 'Listening on ' + bind );
   }
   
-
-io.on('connection', (socket) => {
-  socket.on('connected', (data) => {
-    io.to('admin_room').emit('player/new', {
-      username : data.username
-    });
-  });  
-  socket.on('admin/connected', (data) => {
-    socket.join('admin_room');
-  });
-});
-  
 mongoose.Promise = global.Promise;
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -149,6 +137,40 @@ app.use((err, req, res, next) => {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+  
+
+io.on('connection', (socket) => {
+  
+  socket.on('connected', (data) => {
+    PlayerModel.update({
+      _id : data.player_id
+    }, {
+      $set : {
+        socket : socket.id
+      }
+    }, (err, player) => {
+      io.to('admin_room').emit('player/new', {
+        username : player.name
+      });
+    });
+  });  
+
+  socket.on('admin/connected', (data) => {
+    socket.join('admin_room');
+  });
+
+  socket.on('player/click', (data) => {
+    PlayerModel.findOne({ 
+      'socket': socket.id 
+    }, (err, player) => {
+      io.to('admin_room').emit('player/click', {
+        player: player,
+        time:   data.time
+      });
+    });
+  });
 });
 
 module.exports = app;

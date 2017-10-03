@@ -1,5 +1,11 @@
 var socket = io('http://localhost:3000');
-alert('Connected as ' + $('#username_hidden').val() + ' !');
+
 socket.emit('connected', {
-    username : $('#username_hidden').val()
+    player_id : $('#playerid_hidden').val()
+});
+
+$('#click').click(() => {
+    socket.emit('player/click', {
+        time : Date.now()
+    });
 });

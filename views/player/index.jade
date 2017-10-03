@@ -2,8 +2,8 @@ extends layout
 
 block content
   h1 Bienvenue #{player.username}
-  input#username_hidden(type='hidden', value=player.username)
-  button GO!
+  input#playerid_hidden(type='hidden', value=player._id)
+  button#click GO!
     
 block scripts
   script(src='/socket.io/socket.io.js')

@@ -5,7 +5,7 @@ var player  = require("../controllers/PlayerController.js");
 var team    = require("../controllers/TeamController.js");
 
 // restrict index for logged in user only
-router.post('/player/update', player.update);
+router.post('/player/update/team', player.updateTeam);
 
 // restrict index for logged in user only
 router.get('/players/all', player.all);

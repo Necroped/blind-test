@@ -31,17 +31,18 @@ var playersTable = $('#playersTable').DataTable( {
             render : function ( data, type, row, meta ) {
                 var sel = $('<select>').attr('value', data);
                 sel.attr('id', row._id);
+                sel.addClass('form-control');
                 sel.attr('onchange', 'updatePlayer("' + row._id + '")');
                 sel.append($("<option>").attr('value', '').text('- NONE -'));
                 $(allTeams).each((index, team) => {
-                    var option = $("<option>").attr('value', team._id).text(team.name);
+                    var option = $("<option>").css('background- color', '#' + team.color).attr('value', team._id).text(team.name);
                     if(team._id == data) {
                         option.attr('selected', 'selected');
                     }
                     sel.append(option);
                 });
                 return sel[0].outerHTML;
-            } 
+            }
         }
         
     ],
@@ -82,7 +83,7 @@ function updatePlayer(id) {
     var select = $('#' + id);
     $.ajax({
         dataType: 'json',
-        url: '/api/player/update',
+        url: '/api/player/update/team',
         contentType: 'application/json',
         data : JSON.stringify({
             player_id : id,
@@ -117,12 +118,26 @@ function getRGBComponents(color) {
     };
 }
 
-socket.on('player/new', (player) => {
-    playersTable.ajax.reload();
-});
-socket.on('team/new', (player) => {
-    teamsTable.ajax.reload();
-});
-socket.emit('admin/connected', {
-    username : $('#username_hidden').val()
+
+$(document).ready(function() {
+
+    socket.on('player/new', (player) => {
+        playersTable.ajax.reload();
+    });
+    socket.on('team/new', (player) => {
+        teamsTable.ajax.reload();
+    });
+    socket.emit('admin/connected', {
+        username : $('#username_hidden').val()
+    });
+    socket.on('player/click', (data) => {
+        var player = data.player;
+        var time = data.time;
+        $('#Game').append($('<tr>')
+            .append($('<td>').text(player.username))
+            .append($('<td>').text(new Date(time).toISOString()))
+        )
+        alert(player.username + ' clicked on ' + time);
+    });
+
 });
