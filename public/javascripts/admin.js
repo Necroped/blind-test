@@ -2,82 +2,7 @@ var socket = io('http://localhost:3000');
 
 var allTeams;
 
-$.ajax({
-    dataType: 'json',
-    url: '/api/teams/all',
-    type: 'GET',
-    success: function(response) {
-        allTeams = response.data;
-        console.log(allTeams);
-    }
-});
 
-var playersTable = $('#playersTable').DataTable( {
-    ajax: {
-        url : '/api/players/all',
-        dataSrc : 'data'
-    },
-    columns: [
-        { data: 'username' },
-        { 
-            data: 'connected',
-            render : function ( data, type, row, meta ) {
-                return '<input type="checkbox" checked="' + data + '" disabled>';
-            } 
-        },
-        { data: 'score' },
-        {             
-            data: 'team',
-            render : function ( data, type, row, meta ) {
-                var sel = $('<select>').attr('value', data);
-                sel.attr('id', row._id);
-                sel.addClass('form-control');
-                sel.attr('onchange', 'updatePlayer("' + row._id + '")');
-                sel.append($("<option>").attr('value', '').text('- NONE -'));
-                $(allTeams).each((index, team) => {
-                    var option = $("<option>").css('background- color', '#' + team.color).attr('value', team._id).text(team.name);
-                    if(team._id == data) {
-                        option.attr('selected', 'selected');
-                    }
-                    sel.append(option);
-                });
-                return sel[0].outerHTML;
-            }
-        }
-        
-    ],
-    language: {
-        lengthMenu:   "Afficher _MENU_ données par page",
-        zeroRecords:  "Aucune donnée trouvée - désolé",
-        info:         "Page _PAGE_ / _PAGES_",
-        infoEmpty:    "Aucune donnée disponible",
-        infoFiltered: "(filtrée sur _MAX_ données totales)"
-    }
-});
-
-var teamsTable = $('#teamsTable').DataTable( {
-    ajax: {
-        url : '/api/teams/all',
-        dataSrc : 'data'
-    },
-    columns: [
-        { data: 'name' },
-        { 
-            data: 'color',
-            createdCell: function (td, cellData, rowData, row, col) {
-                $(td).css('color', '#' + cellData);
-                $(td).css('background-color', '#' + cellData);
-            }
-        }
-    ],
-    language: {
-        lengthMenu:   "Afficher _MENU_ données par page",
-        zeroRecords:  "Aucune donnée trouvée - désolé",
-        info:         "Page _PAGE_ / _PAGES_",
-        infoEmpty:    "Aucune donnée disponible",
-        infoFiltered: "(filtrée sur _MAX_ données totales)"
-    }
-});
 
 function updatePlayer(id) {
     var select = $('#' + id);
@@ -118,10 +43,91 @@ function getRGBComponents(color) {
     };
 }
 
-
 $(document).ready(function() {
+    window.reloadContent = function() {
+        jscolor.installByClassName("jscolor");
+        
+        $.ajax({
+            dataType: 'json',
+            url: '/api/teams/all',
+            type: 'GET',
+            success: function(response) {
+                allTeams = response.data;
+                console.log(allTeams);
+            }
+        });
+        
+        var playersTable = $('#playersTable').DataTable( {
+            ajax: {
+                url : '/api/players/all',
+                dataSrc : 'data'
+            },
+            columns: [
+                { data: 'username' },
+                { 
+                    data: 'connected',
+                    render : function ( data, type, row, meta ) {
+                        return '<input type="checkbox" checked="' + data + '" disabled>';
+                    } 
+                },
+                { data: 'score' },
+                {             
+                    data: 'team',
+                    render : function ( data, type, row, meta ) {
+                        var sel = $('<select>').attr('value', data);
+                        sel.attr('id', row._id);
+                        sel.addClass('form-control');
+                        sel.attr('onchange', 'updatePlayer("' + row._id + '")');
+                        sel.append($("<option>").attr('value', '').text('- NONE -'));
+                        $(allTeams).each((index, team) => {
+                            var option = $("<option>").css('background- color', '#' + team.color).attr('value', team._id).text(team.name);
+                            if(team._id == data) {
+                                option.attr('selected', 'selected');
+                            }
+                            sel.append(option);
+                        });
+                        return sel[0].outerHTML;
+                    }
+                }
+                
+            ],
+            language: {
+                lengthMenu:   "Afficher _MENU_ données par page",
+                zeroRecords:  "Aucune donnée trouvée - désolé",
+                info:         "Page _PAGE_ / _PAGES_",
+                infoEmpty:    "Aucune donnée disponible",
+                infoFiltered: "(filtrée sur _MAX_ données totales)"
+            }
+        });
+        
+        var teamsTable = $('#teamsTable').DataTable( {
+            ajax: {
+                url : '/api/teams/all',
+                dataSrc : 'data'
+            },
+            columns: [
+                { data: 'name' },
+                { 
+                    data: 'color',
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).css('color', '#' + cellData);
+                        $(td).css('background-color', '#' + cellData);
+                    }
+                }
+            ],
+            language: {
+                lengthMenu:   "Afficher _MENU_ données par page",
+                zeroRecords:  "Aucune donnée trouvée - désolé",
+                info:         "Page _PAGE_ / _PAGES_",
+                infoEmpty:    "Aucune donnée disponible",
+                infoFiltered: "(filtrée sur _MAX_ données totales)"
+            }
+        });
+    }
+    console.log(socket.id);
 
     socket.on('player/new', (player) => {
+        console.log("new player connected : " + player.username);
         playersTable.ajax.reload();
     });
     socket.on('team/new', (player) => {

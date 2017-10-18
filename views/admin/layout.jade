@@ -5,6 +5,7 @@ html
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', crossorigin='anonymous')
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css', integrity='sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp', crossorigin='anonymous')
     link(rel='stylesheet', href='https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/jquery-minicolors/2.2.6/jquery.minicolors.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
     nav.navbar.navbar-default
@@ -15,8 +16,9 @@ html
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand(href='/admin/players') Players
-          a.navbar-brand(href='/admin/teams') Teams
+          if(admin)
+            a.navbar-brand(action='navigate', page='players') Players
+            a.navbar-brand(action='navigate', page='teams') Teams
         div.collapse.navbar-collapse(id='bs-example-navbar-collapse-1')
           ul.nav.navbar-nav.navbar-right
             if (!admin)
@@ -34,8 +36,32 @@ html
       div.content
         if(error) 
           span #{error.message}
-        block content
+        div#content
+          block content
       
 
     script(src="https://code.jquery.com/jquery-3.2.1.min.js", integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=", crossorigin="anonymous")
     block scripts
+    if(admin) 
+      script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
+      script(src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js')
+      script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
+      script(src='https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js')
+      script(src='/javascripts/jscolor.min.js')
+      script(src='/socket.io/socket.io.js')
+      script(src='/javascripts/admin.js') 
+      script.
+        $(document).on('click', '[action="navigate"]', function () {
+            var page = $(this).attr('page');
+            console.log(page);
+            $.ajax({
+                dataType: 'html',
+                url: '/admin/' + page,
+                type: 'GET',
+                success: function(response) {
+                  console.log(response);
+                  $('#content').html(response);
+                  reloadContent();
+                }
+            });
+        });
