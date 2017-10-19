@@ -43,8 +43,33 @@ function getRGBComponents(color) {
     };
 }
 
+
 $(document).ready(function() {
+
+
+    
     window.reloadContent = function() {
+        $('#create_team').click(function() {
+            console.log('click create team');
+            $.ajax({
+                dataType: 'json',
+                url: '/api/teams/create',
+                contentType: 'application/json',
+                data : JSON.stringify({
+                    name : $('#create_team_name').val(),
+                    color :  $('#create_team_color').val()
+                }),
+                type: 'POST',
+                success: function(response) {
+                    if(!response.error) {
+                        location.reload();
+                    } else {
+                        alert('error : ' + response.error);
+                    }
+                }
+            });
+        });
+
         jscolor.installByClassName("jscolor");
         
         $.ajax({

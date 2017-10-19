@@ -13,4 +13,7 @@ router.get('/players/all', player.all);
 // restrict index for logged in user only
 router.get('/teams/all', team.all);
 
+// restrict index for logged in user only
+router.post('/teams/create', team.create);
+
 module.exports = router;

@@ -20,7 +20,7 @@ teamController.all = (req, res) => {
 // Restrict access to root page
 teamController.create = (req, res) => {
     if(!req.body.name || !req.body.color) {
-        res.render('admin/teams', {
+        res.json({
             error : "Name and Color must be defined",
             admin : req.user
         });
@@ -41,12 +41,12 @@ teamController.create = (req, res) => {
                 })
                 .save(function (err, team) {
                     if (err) {
-                        res.render('admin/teams', {
+                        res.JSON({
                             error : err,
                             admin : req.user
                         });
                     } else {
-                        res.render('admin/teams', {
+                        res.json({
                             admin : req.user
                         });
                     }
