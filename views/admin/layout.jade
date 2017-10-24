@@ -19,14 +19,15 @@ html
           if(admin)
             a.navbar-brand(action='navigate', page='players') Players
             a.navbar-brand(action='navigate', page='teams') Teams
-        div.collapse.navbar-collapse(id='bs-example-navbar-collapse-1')
+            a.navbar-brand(action='navigate', page='songs') Songs
+        div#bs-example-navbar-collapse-1.collapse.navbar-collapse
           ul.nav.navbar-nav.navbar-right
-            if (!admin)
+            if(!admin)
               li
                 a(href='/admin/login') Login
               li
                 a(href='/admin/register') Register
-            if (admin)
+            if(admin)
               li
                 a Welcome #{admin.username}
               li

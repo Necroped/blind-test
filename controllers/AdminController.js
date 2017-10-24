@@ -32,6 +32,13 @@ adminController.teams = (req, res) => {
   });
 };
 
+// Restrict access to root page
+adminController.songs = (req, res) => {
+  res.render( 'admin/songs', { 
+    admin:   req.user
+  });
+};
+
 // Go to registration page
 adminController.register = (req, res) => {
   res.render('admin/register');

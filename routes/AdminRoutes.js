@@ -14,6 +14,8 @@ router.get('/players', isAuthenticated, admin.players);
 
 router.get('/teams', isAuthenticated, admin.teams);
 
+router.get('/songs', isAuthenticated, admin.songs);
+
 router.get('/register', isAuthenticated, admin.register);
 
 router.get('/logout', isAuthenticated, admin.logout);

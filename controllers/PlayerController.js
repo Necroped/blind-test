@@ -68,7 +68,6 @@ playerController.all = (req, res) => {
 // Restrict access to root page
 playerController.updateTeam = (req, res) => {
   let action;
-  console.log(req.body.team_id);
   if(req.body.team_id.length > 0) {
     action = { 
       $set: { 

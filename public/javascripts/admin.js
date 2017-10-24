@@ -45,12 +45,54 @@ function getRGBComponents(color) {
 
 
 $(document).ready(function() {
-
-
-    
+   
     window.reloadContent = function() {
+        var timeout;
+        $('#search_song_input').on('keydown', function() {
+            if(timeout){ 
+                clearTimeout(timeout);
+            }
+            
+            timeout = setTimeout(function() {
+                songsTable.ajax.reload();
+            }, 1000);
+        });
+        
+        var songsTable = $('#songsTable').DataTable({
+            rowReorder: false,
+            ajax: {
+                url : '/api/song/getTrack',
+                dataSrc : 'data',
+                type : 'POST',
+                data : function ( d ) {
+                    d.track = '*' + $('#search_song_input').val() + '*';
+                }
+            },
+            columns: [
+                { 
+                    data: 'jacket',
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).css('background-image', 'url(' + cellData + ')');
+                        $(td).css('background-repeat', 'no-repeat');
+                        $(td).css('background-size', '80px 80px');
+                        $(td).width('80px');
+                        $(td).parent().height('80px');
+                        $(td).html('');
+                    }
+                },
+                { data: 'title' },
+                { data: 'artist' }
+            ],
+            language: {
+                lengthMenu:   "Afficher _MENU_ données par page",
+                zeroRecords:  "Aucune donnée trouvée - désolé",
+                info:         "Page _PAGE_ / _PAGES_",
+                infoEmpty:    "Aucune donnée disponible",
+                infoFiltered: "(filtrée sur _MAX_ données totales)"
+            }
+        });
+    
         $('#create_team').click(function() {
-            console.log('click create team');
             $.ajax({
                 dataType: 'json',
                 url: '/api/teams/create',
@@ -78,10 +120,9 @@ $(document).ready(function() {
             type: 'GET',
             success: function(response) {
                 allTeams = response.data;
-                console.log(allTeams);
             }
         });
-        
+
         var playersTable = $('#playersTable').DataTable( {
             ajax: {
                 url : '/api/players/all',
@@ -149,7 +190,6 @@ $(document).ready(function() {
             }
         });
     }
-    console.log(socket.id);
 
     socket.on('player/new', (player) => {
         console.log("new player connected : " + player.username);
