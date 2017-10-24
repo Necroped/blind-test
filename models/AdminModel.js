@@ -5,12 +5,20 @@ const
     passportLocalMongoose = require('passport-local-mongoose');
 
 const AdminSchema = new Schema({
-    username:  { type : String , unique : true, required : true },
-    password:  { type : String }
+    username : { 
+        type     : String, 
+        unique   : true, 
+        required : true 
+    },
+    password : { 
+        type : String 
+    }
 });
 
 AdminSchema.plugin( passportLocalMongoose );
-AdminSchema.plugin( uniqueValidator, { message: 'Un admin avec pour {PATH} {VALUE} est déjà existant.' } );
+AdminSchema.plugin( uniqueValidator, { 
+    message: 'Un admin avec pour {PATH} {VALUE} est déjà existant.' 
+});
 
 let Admin;
 if( mongoose.models.Admin ) {
@@ -20,6 +28,6 @@ if( mongoose.models.Admin ) {
 }
 
 module.exports = {
-    Model:  Admin,
-    Schema: AdminSchema
+    Model  : Admin,
+    Schema : AdminSchema
 };

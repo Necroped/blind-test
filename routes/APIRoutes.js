@@ -6,18 +6,29 @@ var team    = require("../controllers/TeamController.js");
 var song    = require("../controllers/SongController.js");
 
 // restrict index for logged in user only
-router.post('/player/update/team', player.updateTeam);
+router.post('/player/update/team', isAuthenticated, player.updateTeam);
 
 // restrict index for logged in user only
-router.get('/players/all', player.all);
+router.get('/players/all', isAuthenticated, player.all);
 
 // restrict index for logged in user only
-router.get('/teams/all', team.all);
+router.get('/teams/all', isAuthenticated, team.all);
 
 // restrict index for logged in user only
-router.post('/song/getTrack', song.getTrack);
+router.post('/song/getTrack', isAuthenticated, song.getTrack);
 
 // restrict index for logged in user only
-router.post('/teams/create', team.create);
+router.post('/teams/create', isAuthenticated, team.create);
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////// AUTH //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function isAuthenticated(req, res, next) {
+    if (req.user) {
+        return next();
+    }
+    res.send('Unauthorized');
+}
 
 module.exports = router;
