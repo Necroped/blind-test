@@ -1,11 +1,12 @@
 const
+  _config       = require('./config.js'),
   express       = require('express'),
   app           = express(),
   debug         = require( 'debug' )( 'blind-quiz:server' ),
   http          = require( 'http' ),
   server        = http.createServer( app ),
   io            = require('socket.io')(server);
-  port          = normalizePort( process.env.PORT || '3000' );
+  port          = normalizePort(process.env.PORT || _config.server.port );
   path          = require('path'),
   favicon       = require('serve-favicon'),
   logger        = require('morgan'),
@@ -76,7 +77,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
-  secret:            'ITEventMacon',
+  secret:            _config.session.secret,
   resave:            false,
   saveUninitialized: false
 }));
@@ -84,7 +85,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const 
-  AdminModel = require('./models/AdminModel').Model,
+  AdminModel  = require('./models/AdminModel').Model,
   PlayerModel = require('./models/PlayerModel').Model,
   TeamModel   = require('./models/TeamModel').Model;
 
@@ -92,8 +93,10 @@ passport.use(new LocalStrategy(AdminModel.authenticate()));
 passport.serializeUser(AdminModel.serializeUser());
 passport.deserializeUser(AdminModel.deserializeUser());
 
-mongoose.connect('mongodb://localhost:27017/blind-quiz')
-.then(()     => console.log('connection succesful'))
+mongoose.connect(`mongodb://${_config.mongoose.host}:${_config.mongoose.port}/${_config.mongoose.database}`, { 
+  useMongoClient: true 
+})
+.then(()     => console.log('Connection succesful'))
 .catch((err) => console.error(err))
 .then(() => {
   AdminModel.remove({},  (err) => console.log('Admin base removed'));  
@@ -138,8 +141,6 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.render('error');
 });
-
-  
 
 io.on('connection', (socket) => {
   

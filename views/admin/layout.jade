@@ -57,10 +57,9 @@ html
             console.log(page);
             $.ajax({
                 dataType: 'html',
-                url: '/admin/' + page,
-                type: 'GET',
-                success: function(response) {
-                  console.log(response);
+                url:      '/admin/' + page,
+                type:     'GET',
+                success:  function(response) {
                   $('#content').html(response);
                   reloadContent();
                 }

@@ -1,36 +1,85 @@
 const
-    express = require('express'),
-    router  = express.Router(),
-    admin   = require("../controllers/AdminController.js"),
-    team    = require("../controllers/TeamController.js");
+    express         = require('express'),
+    router          = express.Router(),
+    AdminController = require("../controllers/AdminController.js"),
+    TeamController  = require("../controllers/TeamController.js");
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////// GET //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-router.get('/', isAuthenticated, admin.home);
+router.get('/', isAuthenticated, (req, res) => {
+    res.render('admin/index', {
+        admin: req.user
+    });
+});
 
-router.get('/players', isAuthenticated, admin.players);
+router.get('/players', isAuthenticated, (req, res) => {
+    res.render('admin/players', {
+        admin: req.user
+    });
+});
 
-router.get('/teams', isAuthenticated, admin.teams);
+router.get('/teams', isAuthenticated, (req, res) => {
+    res.render('admin/teams', {
+        admin: req.user
+    });
+});
 
-router.get('/songs', isAuthenticated, admin.songs);
+router.get('/songs', isAuthenticated, (req, res) => {
+    res.render('admin/songs', {
+        admin: req.user
+    });
+});
 
-router.get('/register', isAuthenticated, admin.register);
+router.get('/register', isAuthenticated, (req, res) => {
+    res.render('admin/register');
+});
 
-router.get('/logout', isAuthenticated, admin.logout);
+router.get('/logout', isAuthenticated, (req, res) => {
+    req.logout();
+    res.redirect('/');
+});
 
-router.get('/login', admin.login);
+router.get('/login', (req, res) => {
+    res.render('admin/login');
+});
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////// POST //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-router.post('/register', isAuthenticated, admin.doRegister);
+router.post('/register', isAuthenticated, (req, res) => {
+    AdminController.new({
+        username : req.body.username,
+        password : req.body.password
+    }, (data) => {
+        res.redirect('/admin', {
+            admin : data
+        })
+    })
+});
 
-router.post('/team/create', isAuthenticated, team.create);
+router.post('/team/create', isAuthenticated, (req, res) => {
+    TeamController.create({
+        name : req.body.name,
+        color : req.body.color
+    }, (data) => {
+        res.json({
+            success: true
+        })
+    }, (err) => {
+        res.json({
+            error : err
+        })
+    })
+});
 
-router.post('/login', admin.doLogin);
+router.post('/login', (req, res) => {
+    passport.authenticate('local')(req, res, () => {
+        res.redirect('/admin');
+    });
+});
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

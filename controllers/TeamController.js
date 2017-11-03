@@ -1,64 +1,30 @@
 const
-mongoose        = require("mongoose"),
-Team           = require("../models/TeamModel").Model,
+mongoose       = require("mongoose"),
+TeamModel      = require("../models/TeamModel").Model,
 TeamSchema     = require("../models/TeamModel").Schema,
-teamController = {};
+TeamController = {};
 
-
-// Restrict access to root page
-teamController.all = (req, res) => {
-    Team.find((err, teams) => {
+TeamController.getAll = (cbSuccess, cbError) => {
+    TeamModel.find((err, teams) => {
         if(err)  {
-            res.send(err);
+            cbError(err);
+        } else {
+            cbSuccess(teams);
         }
-        res.json({
-            'data': teams
-        });
     });
 };
 
-// Restrict access to root page
-teamController.create = (req, res) => {
-    if(!req.body.name || !req.body.color) {
-        res.json({
-            error : "Name and Color must be defined",
-            admin : req.user
-        });
-    } else {
-
-/*         Team.findOne({
-            name:  req.body.name,
-            color: req.body.color
-        }, (err, team) => {
-            if (err) {
-                res.render('/error', {
-                    error : err
-                });
-            } else if(!team) { */
-                new Team({ 
-                    name:  req.body.name,
-                    color: req.body.color
-                })
-                .save(function (err, team) {
-                    if (err) {
-                        res.JSON({
-                            error : err,
-                            admin : req.user
-                        });
-                    } else {
-                        res.json({
-                            admin : req.user
-                        });
-                    }
-                });
-         /*    } else {
-                res.render('admin/teams', {
-                    admin : req.user,
-                    error : 'Team already exists'
-                })
-            }
-        }); */
-    }   
+TeamController.create = (data, cbSuccess, cbError) => {
+    new TeamModel({ 
+        name:  data.name,
+        color: data.color
+    }).save((err, team) => {
+        if (err) {
+            cbError(err);
+        } else {
+           cbSuccess(team);
+        }
+    });
 };
 
-module.exports = teamController;
+module.exports = TeamController;
