@@ -9,10 +9,9 @@ const
   PlayerController = {};
 
 // Restrict access to root page
-PlayerController.getById = (id, cbSuccess, cbError) => {
-  PlayerModel.findOne({
-    _id: req.session.player._id
-  }, (err, player) => {
+PlayerController.findOne = (request, cbSuccess, cbError) => {
+  PlayerModel.findOne(
+    request, (err, player) => {
     if (err) {
       cbError(err);
     } else {
@@ -50,7 +49,7 @@ PlayerController.getAll = (cbSuccess, cbError) => {
 };
 
 // Restrict access to root page
-PlayerController.updateTeam = (data, cbSuccess, cbError) => {
+PlayerController.update = (data, cbSuccess, cbError) => {
   PlayerModel.update({ 
     _id: data.player_id
   }, 

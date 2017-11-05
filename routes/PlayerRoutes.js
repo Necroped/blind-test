@@ -9,9 +9,9 @@ const
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 router.get('/', isAuthenticated, (req, res) => {
-    PlayerController.getById(
-        req.session.player._id
-        , (data) => {
+    PlayerController.findOne({
+            id : req.session.player._id
+        }, (data) => {
         res.render('player/index', {
             player: data
         }, (err) => {

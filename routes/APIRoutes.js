@@ -40,7 +40,7 @@ router.post('/player/update/team', (req, res) => {
         player_id = req.body.player_id,
         team_id   = req.body.team_id,
         action    = team_id.length > 0 ? { $set : { team: team_id } } : { $unset : { team: true } };
-    PlayerController.updateTeam({
+    PlayerController.update({
         player_id: player_id,
         action:    action
     }, (data) => {

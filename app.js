@@ -17,56 +17,66 @@ const
   session       = require('express-session'),
   LocalStrategy = require('passport-local').Strategy;
 
+const
+  AdminRoutes  = require('./routes/AdminRoutes'),
+  PlayerRoutes = require('./routes/PlayerRoutes'),
+  APIRoutes    = require('./routes/APIRoutes');
 
-  app.set( 'port', port );
-  
-  /**
-   * Listen on provided port, on all network interfaces.
-   */
-  server.listen( port );
-  server.on( 'error', onError );
-  server.on( 'listening', onListening );
-  
-  /**
-   * Normalize a port into a number, string, or false.
-   */
-  function normalizePort( val ) {
-    return isNaN( parseInt( val, 10 ) ) ? val : parseInt( val, 10 ) >= 0 ? parseInt( val, 10 ) : false
+const
+  AdminModel   = require('./models/AdminModel').Model,
+  PlayerModel  = require('./models/PlayerModel').Model,
+  TeamModel    = require('./models/TeamModel').Model;
+
+
+app.set( 'port', port );
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+server.listen( port );
+server.on( 'error', onError );
+server.on( 'listening', onListening );
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+function normalizePort( val ) {
+  return isNaN( parseInt( val, 10 ) ) ? val : parseInt( val, 10 ) >= 0 ? parseInt( val, 10 ) : false
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+function onError( error ) {
+  if ( error.syscall !== 'listen' ) {
+    throw error;
   }
-  
-  /**
-   * Event listener for HTTP server "error" event.
-   */
-  function onError( error ) {
-    if ( error.syscall !== 'listen' ) {
+
+  const bind = ( typeof port === 'string' ? 'Pipe ' : 'Port ' ) + port;
+
+  // handle specific listen errors with friendly messages
+  switch( error.code ) {
+    case 'EACCES':
+      console.error( bind + ' requires elevated privileges' );
+      process.exit( 1 );
+    break;
+    case 'EADDRINUSE':
+      console.error( bind + ' is already in use' );
+      process.exit( 1 );
+    break;
+    default:
       throw error;
-    }
-  
-    const bind = ( typeof port === 'string' ? 'Pipe ' : 'Port ' ) + port;
-  
-    // handle specific listen errors with friendly messages
-    switch( error.code ) {
-      case 'EACCES':
-        console.error( bind + ' requires elevated privileges' );
-        process.exit( 1 );
-      break;
-      case 'EADDRINUSE':
-        console.error( bind + ' is already in use' );
-        process.exit( 1 );
-      break;
-      default:
-        throw error;
-    }
   }
-  
-  /**
-   * Event listener for HTTP server "listening" event.
-   */
-  function onListening() {
-    const addr = server.address();
-    const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-    debug( 'Listening on ' + bind );
-  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+function onListening() {
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+  debug( 'Listening on ' + bind );
+}
   
 mongoose.Promise = global.Promise;
 app.set('views', path.join(__dirname, 'views'));
@@ -84,11 +94,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-const 
-  AdminModel  = require('./models/AdminModel').Model,
-  PlayerModel = require('./models/PlayerModel').Model,
-  TeamModel   = require('./models/TeamModel').Model;
-
 passport.use(new LocalStrategy(AdminModel.authenticate()));
 passport.serializeUser(AdminModel.serializeUser());
 passport.deserializeUser(AdminModel.deserializeUser());
@@ -96,26 +101,22 @@ passport.deserializeUser(AdminModel.deserializeUser());
 mongoose.connect(`mongodb://${_config.mongoose.host}:${_config.mongoose.port}/${_config.mongoose.database}`, { 
   useMongoClient: true 
 })
-.then(()     => console.log('Connection succesful'))
-.catch((err) => console.error(err))
-.then(() => {
-  AdminModel.remove({},  (err) => console.log('Admin base removed'));  
+.then(()     => {
+  console.log('Connection succesful');
   PlayerModel.remove({}, (err) => console.log('Player base removed'));  
   TeamModel.remove({},   (err) => console.log('Team base removed'));
+  AdminModel.remove({},  (err) => {
+    console.log('Admin base removed');  
+    AdminModel.register( 
+      new AdminModel({ 
+        username : 'admin'
+      }), 
+      'admin', 
+      (err, admin) => err ? console.log(`Error when adding admin to DB : ${err}`) : console.log('Admin added to DB')
+    );
+  })
 })
 .catch((err) => console.error(err))
-.then(() => {
-  AdminModel.register( new AdminModel({ 
-    username : 'admin'
-  }), 
-  'admin', 
-  (err, admin) => err ? console.log(`Error when adding admin to DB : ${err}`) : console.log('Admin added to DB'));
-})
-
-const
-  AdminRoutes  = require('./routes/AdminRoutes'),
-  PlayerRoutes = require('./routes/PlayerRoutes'),
-  APIRoutes    = require('./routes/APIRoutes');
 
 app.get('/', (req, res, next) => {
   res.redirect('/player');
@@ -142,36 +143,6 @@ app.use((err, req, res, next) => {
   res.render('error');
 });
 
-io.on('connection', (socket) => {
-  
-  socket.on('connected', (data) => {
-    PlayerModel.update({
-      _id : data.player_id
-    }, {
-      $set : {
-        socket : socket.id
-      }
-    }, (err, player) => {
-      io.to('admin_room').emit('player/new', {
-        username : player.name
-      });
-    });
-  });  
-
-  socket.on('admin/connected', (data) => {
-    socket.join('admin_room');
-  });
-
-  socket.on('player/click', (data) => {
-    PlayerModel.findOne({ 
-      'socket': socket.id 
-    }, (err, player) => {
-      io.to('admin_room').emit('player/click', {
-        player: player,
-        time:   data.time
-      });
-    });
-  });
-});
+require('./socket.js')(io)
 
 module.exports = app;
