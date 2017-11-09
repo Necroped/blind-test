@@ -72,16 +72,28 @@ $(document).ready(function() {
                 { 
                     data: 'jacket',
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).css('background-image', 'url(' + cellData + ')');
-                        $(td).css('background-repeat', 'no-repeat');
-                        $(td).css('background-size', '80px 80px');
-                        $(td).width('80px');
+                        $(td).css('background-image', 'url(' + cellData + ')')
+                            .css('background-repeat', 'no-repeat')
+                            .css('background-size', '80px 80px')
+                            .width('80px')
+                            .html('');
                         $(td).parent().height('80px');
-                        $(td).html('');
                     }
                 },
                 { data: 'title' },
-                { data: 'artist' }
+                { data: 'artist' },
+                {             
+                    data: 'actions',
+                    render : function ( data, type, row, meta ) {
+                        var btn = $("<button>")
+                          .attr("type", "button")
+                          .addClass("btn")
+                          .addClass("btn-success")
+                          .addClass("btn-block")
+                          .html("ADD");
+                        return btn[0].outerHTML;
+                    }
+                }
             ],
             language: {
                 lengthMenu:   "Afficher _MENU_ données par page",
