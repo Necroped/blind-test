@@ -23,9 +23,10 @@ const
   APIRoutes    = require('./routes/APIRoutes');
 
 const
-  AdminModel   = require('./models/AdminModel').Model,
-  PlayerModel  = require('./models/PlayerModel').Model,
-  TeamModel    = require('./models/TeamModel').Model;
+  AdminModel  = require('./models/AdminModel').Model,
+  PlayerModel = require('./models/PlayerModel').Model,
+  SongModel   = require("./models/SongModel").Model,
+  TeamModel   = require('./models/TeamModel').Model;
 
 
 app.set( 'port', port );
@@ -103,7 +104,8 @@ mongoose.connect(`mongodb://${_config.mongoose.host}:${_config.mongoose.port}/${
 })
 .then(()     => {
   console.log('Connection succesful');
-  PlayerModel.remove({}, (err) => console.log('Player base removed'));  
+  PlayerModel.remove({}, (err) => console.log('Player base removed')); 
+  SongModel.remove({}, err => console.log("Song base removed"));  
   TeamModel.remove({},   (err) => console.log('Team base removed'));
   AdminModel.remove({},  (err) => {
     console.log('Admin base removed');  

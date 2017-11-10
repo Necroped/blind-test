@@ -2,10 +2,7 @@ const
   mongoose         = require("mongoose"),
   passport         = require("passport"),
   session          = require("express-session"),
-  AdminModel       = require("../models/AdminModel").Model,
-  AdminSchema      = require("../models/AdminModel").Schema,
   PlayerModel      = require("../models/PlayerModel").Model,
-  PlayerSchema     = require("../models/PlayerModel").Schema,
   PlayerController = {};
 
 // Restrict access to root page

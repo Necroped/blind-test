@@ -21,14 +21,30 @@ router.get('/players/all', (req, res) => {
     })
 });
 
-router.get('/teams/all', (req, res) => {
-    TeamController.getAll((data) => {
-        res.json({
-            'data': data
-        });
-    }, (err) => {
-        res.send(err);
-    })
+router.get("/teams/all", (req, res) => {
+  TeamController.getAll(
+    data => {
+      res.json({
+        data: data
+      });
+    },
+    err => {
+      res.send(err);
+    }
+  );
+});
+
+router.get("/songs/all", (req, res) => {
+  SongController.getAll(
+    data => {
+      res.json({
+        data: data
+      });
+    },
+    err => {
+      res.send(err);
+    }
+  );
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,32 +89,75 @@ router.post('/teams/create', (req, res) => {
     }
 });
 
-router.post('/song/getTrack', isAuthenticated, (req, res) => {
-    SongController.getTrack({
-        track : req.body.track
-    }, (data) => {
-        let items = data.tracks.items;
-        items.sort((a, b) => {
-            return b.popularity - a.popularity;
-        })
-        items = items.splice(0, 10);
+router.post("/song/getTrack", isAuthenticated, (req, res) => {
+  SongController.getTrack({
+      track: req.body.track
+    },
+    data => {
+      let items = data.tracks.items;
+      items.sort((a, b) => {
+        return b.popularity - a.popularity;
+      });
+      //items = items.splice(0, 10);
 
-        for (i = 0; i < items.length; ++i) {
-            items[i] = {
-                title:  items[i].name,
-                artist: items[i].artists[0].name,
-                jacket: items[i].album.images[0].url
-            }
-        }
-        res.json({
-            data: items
-        });
-    }, (err, data) => {
-        res.json({
-            error: err
-        });
-    })
+      for (i = 0; i < items.length; ++i) {
+        items[i] = {
+          title: items[i].name,
+          artist: items[i].artists[0].name,
+          jacket: items[i].album.images[0].url,
+          id: items[i].id
+        };
+      }
+      res.json({
+        data: items
+      });
+    },
+    (err, data) => {
+      res.json({
+        error: err
+      });
+    }
+  );
 });
+
+router.post("/song/add", isAuthenticated, (req, res) => {
+  SongController.add(
+    {
+      artist: req.body.artist,
+      title: req.body.title,
+      idSpotify: req.body.idSpotify
+    },
+    data => {
+      res.json({
+        data: data
+      });
+    },
+    err => {
+      res.json({
+        error: err
+      });
+    }
+  );
+});
+
+router.post("/song/remove", isAuthenticated, (req, res) => {
+  SongController.add(
+    {
+      idSpotify: req.body.idSpotify,
+    },
+    data => {
+      res.json({
+        data: data
+      });
+    },
+    err => {
+      res.json({
+        error: err
+      });
+    }
+  );
+});
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////// AUTH //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

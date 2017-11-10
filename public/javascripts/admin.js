@@ -1,28 +1,87 @@
 var socket = io('http://localhost:3000');
 
-var allTeams;
+var 
+    allTeams = getAllTeams(),
+    allSongs = getAllSongs();
 
 
 
 function updatePlayer(id) {
     var select = $('#' + id);
     $.ajax({
-        dataType: 'json',
-        url: '/api/player/update/team',
-        contentType: 'application/json',
-        data : JSON.stringify({
+        dataType      : 'json',
+        url           : '/api/player/update/team',
+        contentType   : 'application/json',
+        data          : JSON.stringify({
             player_id : id,
-            team_id : select.val()
+            team_id   : select.val()
         }),
-        type: 'POST',
-        success: function(response) {
+        type          : 'POST',
+        success       : function(response) {
             console.log(response + " updating team");
         }
     });
 }
 
-function idealTextColor(bgColor) {
+function getAllTeams() {
+    $.ajax({
+        dataType: "json",
+        url: "/api/teams/all",
+        type: "GET",
+        success: function(response) {
+           return response.data;
+        }
+    });
+}
 
+function getAllSongs() {
+    $.ajax({
+        dataType: "json",
+        url: "/api/songs/all",
+        type: "GET",
+        success: function(response) {
+            return response.data;
+        },
+        error : function(err) {
+            console.error(err);
+        }
+    });
+}
+
+function addSong(data) {
+  $.ajax({
+    dataType: "json",
+    url: "/api/song/add",
+    contentType: "application/json",
+    data: JSON.stringify({
+      artist: data.artist,
+      title: data.title,
+      idSpotify: data.id
+    }),
+    type: "POST",
+    success: function(response) {
+      songsTable.ajax.reload();
+    }
+  });
+}
+
+function removeSong(data) {
+  $.ajax({
+    dataType: "json",
+    url: "/api/song/remove",
+    contentType: "application/json",
+    data: JSON.stringify({
+        idSpotify: data.id
+    }),
+    type: "POST",
+    success: function(response) {
+      songsTable.ajax.reload();
+    }
+  });
+}
+
+function idealTextColor(bgColor) {
+    
     var nThreshold = 105;
     var components = getRGBComponents(bgColor);
     var bgDelta = (components.R * 0.299) + (components.G * 0.587) + (components.B * 0.114);
@@ -43,10 +102,16 @@ function getRGBComponents(color) {
     };
 }
 
-
 $(document).ready(function() {
    
     window.reloadContent = function() {
+        
+        
+        jscolor.installByClassName("jscolor");
+
+        allTeams = getAllTeams();
+        allSongs = getAllSongs();
+
         var timeout;
         $('#search_song_input').on('keydown', function() {
             if(timeout){ 
@@ -57,6 +122,7 @@ $(document).ready(function() {
                 songsTable.ajax.reload();
             }, 1000);
         });
+
         
         var songsTable = $('#songsTable').DataTable({
             rowReorder: false,
@@ -83,14 +149,25 @@ $(document).ready(function() {
                 { data: 'title' },
                 { data: 'artist' },
                 {             
-                    data: 'actions',
+                    data: 'id',
                     render : function ( data, type, row, meta ) {
+                        var isAdded = false;
+                        if(typeof allSongs !== 'undefined') {
+                            for(var i = 0; i < allSongs.length ; i++) {
+                                if (allSongs[i].id == data) {
+                                    isAdded = true;
+                                    break;
+                                }
+                            }
+                        }
                         var btn = $("<button>")
                           .attr("type", "button")
+                          .attr("id", "addbutton_" + data)
                           .addClass("btn")
-                          .addClass("btn-success")
+                          .addClass(isAdded == true ? "btn-danger" : "btn-success")
                           .addClass("btn-block")
-                          .html("ADD");
+                          //.attr("onclick", (isAdded == true ? "removeSong" : "addSong") + "(" + JSON.stringify(row) + ")")
+                          .html(isAdded == true ? "REMOVE" : "ADD");
                         return btn[0].outerHTML;
                     }
                 }
@@ -122,17 +199,6 @@ $(document).ready(function() {
                     }
                 }
             });
-        });
-
-        jscolor.installByClassName("jscolor");
-        
-        $.ajax({
-            dataType: 'json',
-            url: '/api/teams/all',
-            type: 'GET',
-            success: function(response) {
-                allTeams = response.data;
-            }
         });
 
         var playersTable = $('#playersTable').DataTable( {
