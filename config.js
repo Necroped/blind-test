@@ -2,7 +2,7 @@ module.exports = {
     mongoose : {
         host : 'localhost',
         port : 27017,
-        database : 'blind-quiz'
+        database : 'blind-quiz'// mongodb://localhost:27017/blind-quiz
     },
     server : {
         port : 3000

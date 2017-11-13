@@ -1,10 +1,7 @@
 var socket = io('http://localhost:3000');
 
-var 
-    allTeams = getAllTeams(),
-    allSongs = getAllSongs();
-
-
+window.allTeams = getAllTeams();
+window.allSongs = getAllSongs();
 
 function updatePlayer(id) {
     var select = $('#' + id);
@@ -29,7 +26,7 @@ function getAllTeams() {
         url: "/api/teams/all",
         type: "GET",
         success: function(response) {
-           return response.data;
+            window.allTeams = response.data;
         }
     });
 }
@@ -40,7 +37,7 @@ function getAllSongs() {
         url: "/api/songs/all",
         type: "GET",
         success: function(response) {
-            return response.data;
+            window.allSongs = response.data;
         },
         error : function(err) {
             console.error(err);
@@ -48,7 +45,7 @@ function getAllSongs() {
     });
 }
 
-function addSong(data) {
+function addSong(data, cb) {
   $.ajax({
     dataType: "json",
     url: "/api/song/add",
@@ -60,7 +57,8 @@ function addSong(data) {
     }),
     type: "POST",
     success: function(response) {
-      songsTable.ajax.reload();
+        window.allSongs = getAllSongs();
+        window.songsTable.ajax.reload();
     }
   });
 }
@@ -75,7 +73,8 @@ function removeSong(data) {
     }),
     type: "POST",
     success: function(response) {
-      songsTable.ajax.reload();
+        window.allSongs = getAllSongs();
+        window.songsTable.ajax.reload();
     }
   });
 }
@@ -103,14 +102,15 @@ function getRGBComponents(color) {
 }
 
 $(document).ready(function() {
-   
+
+
     window.reloadContent = function() {
         
         
         jscolor.installByClassName("jscolor");
 
-        allTeams = getAllTeams();
-        allSongs = getAllSongs();
+        window.allTeams = getAllTeams();
+        window.allSongs = getAllSongs();
 
         var timeout;
         $('#search_song_input').on('keydown', function() {
@@ -119,12 +119,12 @@ $(document).ready(function() {
             }
             
             timeout = setTimeout(function() {
-                songsTable.ajax.reload();
+                window.songsTable.ajax.reload();
             }, 1000);
         });
 
         
-        var songsTable = $('#songsTable').DataTable({
+        window.songsTable = $('#songsTable').DataTable({
             rowReorder: false,
             ajax: {
                 url : '/api/song/getTrack',
@@ -152,9 +152,9 @@ $(document).ready(function() {
                     data: 'id',
                     render : function ( data, type, row, meta ) {
                         var isAdded = false;
-                        if(typeof allSongs !== 'undefined') {
-                            for(var i = 0; i < allSongs.length ; i++) {
-                                if (allSongs[i].id == data) {
+                        if (typeof window.allSongs !== 'undefined') {
+                            for (var i = 0; i < window.allSongs.length ; i++) {
+                                if (window.allSongs[i].idSpotify == data) {
                                     isAdded = true;
                                     break;
                                 }
@@ -166,7 +166,7 @@ $(document).ready(function() {
                           .addClass("btn")
                           .addClass(isAdded == true ? "btn-danger" : "btn-success")
                           .addClass("btn-block")
-                          //.attr("onclick", (isAdded == true ? "removeSong" : "addSong") + "(" + JSON.stringify(row) + ")")
+                          .attr("onclick", (isAdded == true ? "removeSong" : "addSong") + "(" + JSON.stringify(row) + ")")
                           .html(isAdded == true ? "REMOVE" : "ADD");
                         return btn[0].outerHTML;
                     }
@@ -201,7 +201,7 @@ $(document).ready(function() {
             });
         });
 
-        var playersTable = $('#playersTable').DataTable( {
+        window.playersTable = $('#playersTable').DataTable( {
             ajax: {
                 url : '/api/players/all',
                 dataSrc : 'data'
@@ -244,7 +244,7 @@ $(document).ready(function() {
             }
         });
         
-        var teamsTable = $('#teamsTable').DataTable( {
+        window.teamsTable = $('#teamsTable').DataTable( {
             ajax: {
                 url : '/api/teams/all',
                 dataSrc : 'data'
@@ -271,10 +271,10 @@ $(document).ready(function() {
 
     socket.on('player/new', (player) => {
         console.log("new player connected : " + player.username);
-        playersTable.ajax.reload();
+        window.playersTable.ajax.reload();
     });
     socket.on('team/new', (player) => {
-        teamsTable.ajax.reload();
+        window.teamsTable.ajax.reload();
     });
     socket.emit('admin/connected', {
         username : $('#username_hidden').val()

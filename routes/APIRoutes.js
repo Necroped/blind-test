@@ -141,7 +141,7 @@ router.post("/song/add", isAuthenticated, (req, res) => {
 });
 
 router.post("/song/remove", isAuthenticated, (req, res) => {
-  SongController.add(
+  SongController.remove(
     {
       idSpotify: req.body.idSpotify,
     },

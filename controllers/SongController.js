@@ -42,11 +42,11 @@ SongController.remove = (data, cbSuccess, cbError) => {
   SongModel.remove( {
       idSpotify: data.idSpotify
     },
-    (err, player) => {
+    (err, song) => {
       if (err) {
         cbError(err);
       } else {
-        cbSuccess(players);
+        cbSuccess(song);
       }
     }
   );
