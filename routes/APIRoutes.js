@@ -91,25 +91,24 @@ router.post('/teams/create', (req, res) => {
 
 router.post("/song/getTrack", isAuthenticated, (req, res) => {
   SongController.getTrack({
-      track: req.body.track
+      track: req.body.track,
+      artist: req.body.artist
     },
     data => {
       let items = data.tracks.items;
-      items.sort((a, b) => {
-        return b.popularity - a.popularity;
-      });
       //items = items.splice(0, 10);
 
+      let result = [];
       for (i = 0; i < items.length; ++i) {
-        items[i] = {
-          title: items[i].name,
-          artist: items[i].artists[0].name,
-          jacket: items[i].album.images[0].url,
-          id: items[i].id
-        };
+        result.push({
+          title:      items[i].name,
+          artist:     items[i].artists[0].name,
+          jacket:     items[i].album.images[0].url,
+          id:         items[i].id
+        });
       }
       res.json({
-        data: items
+        data: result
       });
     },
     (err, data) => {

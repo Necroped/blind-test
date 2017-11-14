@@ -8,10 +8,11 @@ const Spotify = require("node-spotify-api"),
   SongController = {};
 
 SongController.getTrack = (data, cbSuccess, cbError) => {
+  console.log((data.artist ? "artist:'" + data.artist + "' AND " : "") + "track:'" + data.track + "'");
   spotify.search(
     {
       type: "track",
-      query: data.track,
+      query: (data.artist ? "artist:'" + data.artist + "' AND " : "") + "track:'" + data.track + "'",
       limit: 50
     },
     (err, data) => {

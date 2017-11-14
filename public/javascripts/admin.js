@@ -103,9 +103,7 @@ function getRGBComponents(color) {
 
 $(document).ready(function() {
 
-
     window.reloadContent = function() {
-        
         
         jscolor.installByClassName("jscolor");
 
@@ -126,15 +124,24 @@ $(document).ready(function() {
         
         window.songsTable = $('#songsTable').DataTable({
             rowReorder: false,
+            ordering: false,
             ajax: {
                 url : '/api/song/getTrack',
                 dataSrc : 'data',
                 type : 'POST',
                 data : function ( d ) {
-                    d.track = '*' + $('#search_song_input').val() + '*';
+                    if ($('#search_song_input').val().indexOf('|') > -1) {
+                        var artist = $('#search_song_input').val().substring($('#search_song_input').val().indexOf('|') + 1).trim();
+                        var title  = $('#search_song_input').val().substring(0, $('#search_song_input').val().indexOf('|')).trim();
+                        d.artist   = artist;
+                        d.track    = title;
+                    } else {
+                        d.track = $('#search_song_input').val();
+                    }
                 }
             },
             columns: [
+                { data: 'popularity' },                
                 { 
                     data: 'jacket',
                     createdCell: function (td, cellData, rowData, row, col) {
