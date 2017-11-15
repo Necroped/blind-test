@@ -37,7 +37,7 @@ html
       div.content
         if(error) 
           span #{error.message}
-        div#content
+        div#content(data-page="home")
           block content
       
 
@@ -51,10 +51,12 @@ html
       script(src='/javascripts/jscolor.min.js')
       script(src='/socket.io/socket.io.js')
       script(src='/javascripts/admin.js') 
+      script(src='/javascripts/admin_copy.js') 
+      script(src='/javascripts/Ajax.js') 
       script.
         $(document).on('click', '[action="navigate"]', function () {
             var page = $(this).attr('page');
-            console.log(page);
+            $('#content').attr('data-page', page);
             $.ajax({
                 dataType: 'html',
                 url:      '/admin/' + page,
