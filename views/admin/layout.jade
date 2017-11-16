@@ -50,9 +50,9 @@ html
       script(src='https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js')
       script(src='/javascripts/jscolor.min.js')
       script(src='/socket.io/socket.io.js')
-      script(src='/javascripts/admin.js') 
-      script(src='/javascripts/admin_copy.js') 
-      script(src='/javascripts/Ajax.js') 
+      script(src='/javascripts/Datatables.js')
+      script(src='/javascripts/Ajax.js')
+      script(src='/javascripts/admin_copy.js')
       script.
         $(document).on('click', '[action="navigate"]', function () {
             var page = $(this).attr('page');
@@ -63,7 +63,7 @@ html
                 type:     'GET',
                 success:  function(response) {
                   $('#content').html(response);
-                  reloadContent();
+                  LoadJS.init();
                 }
             });
         });

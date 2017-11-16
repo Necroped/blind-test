@@ -1,35 +1,22 @@
 var socket = socket || io('http://localhost:3000');
 
-$(document).ready(function() {
+var LoadJS = function() {
+    
+    var _this = this;
 
-    var currentPage = $('#content').attr('data-page');
-    var loadjs = new LoadJS();
-    Datatables.init();
-
-    if($('.jscolor').length > 0) {
-        jscolor.installByClassName("jscolor");
-    }
-
-    switch (currentPage) {
-        case "songs":
-            loadjs.initSongs();
-        break;
-        case "players":
-            loadjs.initPlayers();
-        break;
-        case "teams":
-            loadjs.initTeams();
-        break;
-        default : 
-            loadjs.initHome();
-    }
-})
-
-
-LoadJS = function() {
     this.teams = [];
     this.songs = [];
     
+
+    Ajax.teams(function(data) {
+        _this.teams = data;
+    });
+    
+    Ajax.songs(function(data) {
+        _this.songs = data;
+    });
+
+
     this.initSongs = function() {
 
         Datatables.initSongs("#songsTable");
@@ -44,25 +31,49 @@ LoadJS = function() {
 
     this.initPlayers = function() {
 
-        Datatables.initSongs("#playersTable");
+        Datatables.initPlayers("#playersTable");
 
     }
 
     this.initTeams = function() {
 
-        Datatables.initSongs("#teamsTable");
+        Datatables.initTeams("#teamsTable");
         $("#create_team").click(function() {
-            Ajax.teamCreate({
+            var callAjax = Ajax.teamCreate({
                 name  : $("#create_team_name").val(),
                 color : $("#create_team_color").val()
-            }, function(data) {
+            }).done(function(data) {
                 if (!data.error) {
-                    location.reload();
+                    Datatables.teams.ajax.reload();
                 } else {
                     alert("error : " + data.error);
                 }
             });
         });
     }
-
 }
+
+LoadJS.init = function() {
+    
+    var currentPage = $("#content").attr("data-page");
+    var loadjs = new LoadJS();
+    Datatables.loadjs = loadjs;
+
+    if ($(".jscolor").length > 0) {
+        jscolor.installByClassName("jscolor");
+    }
+
+    switch (currentPage) {
+        case "songs":
+            loadjs.initSongs();
+            break;
+        case "players":
+            loadjs.initPlayers();
+            break;
+        case "teams":
+            loadjs.initTeams();
+            break;
+        default:
+            loadjs.initHome();
+    }
+};

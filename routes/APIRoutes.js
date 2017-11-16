@@ -1,10 +1,10 @@
 const 
     express          = require('express'),
     router           = express.Router(),
-    AdminController  = require("../controllers/AdminController.js"),
-    PlayerController = require("../controllers/PlayerController.js"),
-    TeamController   = require("../controllers/TeamController.js"),
-    SongController   = require("../controllers/SongController.js");
+    AdminController  = require('../controllers/AdminController.js'),
+    PlayerController = require('../controllers/PlayerController.js'),
+    TeamController   = require('../controllers/TeamController.js'),
+    SongController   = require('../controllers/SongController.js');
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@ router.get('/players/all', (req, res) => {
     })
 });
 
-router.get("/teams/all", (req, res) => {
+router.get('/teams/all', (req, res) => {
   TeamController.getAll(
     data => {
       res.json({
@@ -34,7 +34,7 @@ router.get("/teams/all", (req, res) => {
   );
 });
 
-router.get("/songs/all", (req, res) => {
+router.get('/songs/all', (req, res) => {
   SongController.getAll(
     data => {
       res.json({
@@ -69,7 +69,7 @@ router.post('/player/update/team', (req, res) => {
 router.post('/teams/create', (req, res) => {
     if(!req.body.name || !req.body.color) {
         res.json({
-            error: "Name and Color must be defined",
+            error: 'Name and Color must be defined',
             admin: req.user
         });
     } else {
@@ -89,7 +89,7 @@ router.post('/teams/create', (req, res) => {
     }
 });
 
-router.post("/song/getTrack", isAuthenticated, (req, res) => {
+router.post('/song/getTrack', isAuthenticated, (req, res) => {
   SongController.getTrack({
       track: req.body.track,
       artist: req.body.artist
@@ -119,7 +119,7 @@ router.post("/song/getTrack", isAuthenticated, (req, res) => {
   );
 });
 
-router.post("/song/add", isAuthenticated, (req, res) => {
+router.post('/song/add', isAuthenticated, (req, res) => {
   SongController.add(
     {
       artist: req.body.artist,
@@ -139,7 +139,7 @@ router.post("/song/add", isAuthenticated, (req, res) => {
   );
 });
 
-router.post("/song/remove", isAuthenticated, (req, res) => {
+router.post('/song/remove', isAuthenticated, (req, res) => {
   SongController.remove(
     {
       idSpotify: req.body.idSpotify,
