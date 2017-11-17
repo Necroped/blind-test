@@ -1,5 +1,3 @@
-var socket = socket || io('http://localhost:3000');
-
 var LoadJS = function() {
     
     var _this = this;
@@ -8,12 +6,12 @@ var LoadJS = function() {
     this.songs = [];
     
 
-    Ajax.teams(function(data) {
-        _this.teams = data;
+    Ajax.teams().done(function(data) {
+        _this.teams = data.data;
     });
     
-    Ajax.songs(function(data) {
-        _this.songs = data;
+    Ajax.songs().done(function(data) {
+        _this.songs = data.data;
     });
 
 
@@ -39,15 +37,13 @@ var LoadJS = function() {
 
         Datatables.initTeams("#teamsTable");
         $("#create_team").click(function() {
-            var callAjax = Ajax.teamCreate({
+            Ajax.teamCreate({
                 name  : $("#create_team_name").val(),
                 color : $("#create_team_color").val()
             }).done(function(data) {
-                if (!data.error) {
-                    Datatables.teams.ajax.reload();
-                } else {
-                    alert("error : " + data.error);
-                }
+                Datatables.teams.ajax.reload();
+            }).fail(function(err, data) {
+                alert("ERROR : " + JSON.stringify(err))
             });
         });
     }

@@ -10,14 +10,14 @@ const
 
 router.get('/', isAuthenticated, (req, res) => {
     PlayerController.findOne({
-            id : req.session.player._id
-        }, (data) => {
+        _id : req.session.player._id
+    }, (data) => {
         res.render('player/index', {
             player: data
-        }, (err) => {
-            res.redirect('/player/login');
-        });
-    })
+        })
+    }, (err) => {
+        res.redirect('/player/login');
+    });
 });
 
 router.get('/login', (req, res) => {

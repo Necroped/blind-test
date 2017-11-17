@@ -14,9 +14,9 @@ module.exports = (io) => {
             PlayerController.update({
                 player_id: player_id,
                 action: action
-            }, (data) => {
+            }, (player) => {
                 io.to('admin_room').emit('player/new', {
-                    username: player.name
+                    username: player.username
                 });
             })
         });
@@ -26,7 +26,7 @@ module.exports = (io) => {
         socket.on('player/click', (data) => {
             PlayerController.findOne({
                 socket: socket.id
-            }, (data) => {
+            }, (player) => {
                 io.to('admin_room').emit('player/click', {
                     player: player,
                     time: data.time

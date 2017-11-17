@@ -50,14 +50,6 @@ Datatables.initSongs = function(selector) {
                                 }
                             }
                         }
-/*                         if (typeof window.allSongs !== 'undefined') {
-                            for (var i = 0; i < window.allSongs.length; i++) {
-                                if (window.allSongs[i].idSpotify == data) {
-                                    isAdded = true;
-                                    break;
-                                }
-                            }
-                        } */
                         var btn = $('<button>').attr('type', 'button').attr('id', 'addbutton_' + data).addClass('btn').addClass(isAdded == true ? 'btn-danger' : 'btn-success').addClass('btn-block').attr('onclick',(isAdded == true ? 'removeSong' : 'addSong') +'(' +JSON.stringify(row) +')').html(isAdded == true ? 'REMOVE' : 'ADD');
                         return btn[0].outerHTML;
                     }
@@ -101,7 +93,7 @@ Datatables.initPlayers = function(selector) {
                 var sel = $("<select>").attr("value", data);
                 sel.attr("id", row._id);
                 sel.addClass("form-control");
-                sel.attr("onchange", "updatePlayer(" + row._id + ")");
+                sel.attr("onchange", "Ajax.playerUpdateTeam('" + row._id + "')");
                 sel.append(
                   $("<option>")
                     .attr("value", "")
@@ -110,7 +102,7 @@ Datatables.initPlayers = function(selector) {
                 if (typeof Datatables.loadjs.teams !== "undefined" && Datatables.loadjs.teams.length > 0) {
 
                     for (var i = 0; i < Datatables.loadjs.teams.length; i++) {
-                      var team = teams[i];
+                      var team = Datatables.loadjs.teams[i];
                       var option = $("<option>")
                         .css("background- color", "#" + team.color)
                         .attr("value", team._id)
@@ -121,13 +113,6 @@ Datatables.initPlayers = function(selector) {
                       sel.append(option);
                     }
                 }
-                /*                         $(allTeams).each((index, team) => {
-                            var option = $('<option>').css('background- color', '#' + team.color).attr('value', team._id).text(team.name);
-                            if (team._id == data) {
-                                option.attr('selected', 'selected');
-                            }
-                            sel.append(option);
-                        }); */
                 return sel[0].outerHTML;
               }
             }

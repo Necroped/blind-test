@@ -55,7 +55,7 @@ PlayerController.update = (data, cbSuccess, cbError) => {
     if (err) {
       cbError(err);
     } else {
-      cbSuccess(players)
+      cbSuccess(player)
     }
   });
 };
