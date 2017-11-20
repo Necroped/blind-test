@@ -95,21 +95,29 @@ router.post('/song/getTrack', isAuthenticated, (req, res) => {
       artist: req.body.artist
     },
     data => {
-      let items = data.tracks.items;
-      //items = items.splice(0, 10);
+      if(data.length == 0) {
+        res.json({
+          data : data
+        })
+      } else {
 
-      let result = [];
-      for (i = 0; i < items.length; ++i) {
-        result.push({
-          title:      items[i].name,
-          artist:     items[i].artists[0].name,
-          jacket:     items[i].album.images[0].url,
-          id:         items[i].id
+
+        let items = data.tracks.items;
+        //items = items.splice(0, 10);
+
+        let result = [];
+        for (i = 0; i < items.length; ++i) {
+          result.push({
+            title:      items[i].name,
+            artist:     items[i].artists[0].name,
+            jacket:     items[i].album.images[0].url,
+            id:         items[i].id
+          });
+        }
+        res.json({
+          data: result
         });
       }
-      res.json({
-        data: result
-      });
     },
     (err, data) => {
       res.json({

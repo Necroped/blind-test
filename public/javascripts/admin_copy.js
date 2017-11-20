@@ -19,7 +19,7 @@ var LoadJS = function() {
 
         Datatables.initSongs("#songsTable");
 
-        $("#search_song_input").on("keydown", function() {
+        $("#search_song_input").on("keyup", function() {
             if(Datatables.songs && $(this).val().length >= 3) {
                 Datatables.songs.ajax.reload()
             }

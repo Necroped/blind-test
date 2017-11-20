@@ -8,21 +8,31 @@ const Spotify = require("node-spotify-api"),
   SongController = {};
 
 SongController.getTrack = (data, cbSuccess, cbError) => {
-  console.log((data.artist ? "artist:'" + data.artist + "' AND " : "") + "track:'" + data.track + "'");
-  spotify.search(
-    {
-      type: "track",
-      query: (data.artist ? "artist:'" + data.artist + "' AND " : "") + "track:'" + data.track + "'",
-      limit: 50
-    },
-    (err, data) => {
-      if (err) {
-        cbError(err);
-      } else {
-        cbSuccess(data);
+  console.log(data.artist && data.artist.trim().length > 0 ? "artist:*" + encodeURI(data.artist).replace(" ", "%20") + "* AND " : "" + data.track && data.track.trim().length > 0 ? "track:*" + encodeURI(data.track).replace(" ", "%20") + "*" : "*");
+  if(!data.artist && !data.track) {
+    cbSuccess([]);
+    res.end();
+  } else {
+    spotify.search(
+      {
+        type: "track",
+        query: 
+          data.artist && data.artist.trim().length > 0 ? "artist:*" + encodeURI(data.artist.trim()).replace(' ', '%20') + "*" : "" +
+          data.artist && data.track && data.artist.trim().length > 0 && data.track.trim().length > 0 ? " AND " : "" +
+          data.track && data.track.trim().length > 0 ? "track:*" + encodeURI(data.artist.trim()).replace(' ', '%20') + "*" : "*",
+        //"track:*" + encodeURI(data.track).replace(' ', '%20') + "*",
+        limit: 50
+      },
+      (err, data) => {
+        if (err) {
+          cbError(err);
+        } else {
+          cbSuccess(data);
+        }
       }
-    }
-  );
+    );
+    return;
+  }
 }
 
 SongController.add = (data, cbSuccess, cbError) => {

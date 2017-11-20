@@ -21,7 +21,8 @@ Datatables.initSongs = function(selector) {
                 dataSrc : 'data',
                 type    : 'POST',
                 data    : function(d) {
-                    d.track = '*' + $('#search_song_input').val() + '*';
+                    d.track = $('#search_song_input').val().split(',')[0];
+                    d.artist = $('#search_song_input').val().split(',')[1];
                 }
             },
             columns: [
