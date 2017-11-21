@@ -1,26 +1,38 @@
-const Spotify = require("node-spotify-api"),
-  _config = require("../config"),
-  spotify = new Spotify({
-    id: _config.spotify.id,
-    secret: _config.spotify.secret
+const 
+  Spotify     = require('node-spotify-api'),
+  _config     = require('../config'),
+  spotify     = new Spotify({
+    id     : _config.spotify.id,
+    secret : _config.spotify.secret
   }),
-  SongModel = require("../models/SongModel").Model,
+  SongModel      = require('../models/SongModel').Model,
   SongController = {};
 
 SongController.getTrack = (data, cbSuccess, cbError) => {
-  console.log(data.artist && data.artist.trim().length > 0 ? "artist:*" + encodeURI(data.artist).replace(" ", "%20") + "* AND " : "" + data.track && data.track.trim().length > 0 ? "track:*" + encodeURI(data.track).replace(" ", "%20") + "*" : "*");
-  if(!data.artist && !data.track) {
+  let query = '';
+  if(data.artist) {
+    if(data.artist.trim().length) {
+      query += 'artist:*' + encodeURI(data.artist.trim()).replace(' ', '%20') + '*';
+    }
+  }
+  if(data.artist && data.track) {
+    if(data.artist.trim().length && data.track.trim().length) {
+      query += ' AND '; 
+    }
+  }
+  if(data.track) {
+    if(data.track.trim().length) {
+      query += 'track:*' + encodeURI(data.track.trim()).replace(' ', '%20') + '*';
+    }
+  }
+
+  if(query.length == 0) {
     cbSuccess([]);
-    res.end();
   } else {
     spotify.search(
       {
-        type: "track",
-        query: 
-          data.artist && data.artist.trim().length > 0 ? "artist:*" + encodeURI(data.artist.trim()).replace(' ', '%20') + "*" : "" +
-          data.artist && data.track && data.artist.trim().length > 0 && data.track.trim().length > 0 ? " AND " : "" +
-          data.track && data.track.trim().length > 0 ? "track:*" + encodeURI(data.artist.trim()).replace(' ', '%20') + "*" : "*",
-        //"track:*" + encodeURI(data.track).replace(' ', '%20') + "*",
+        type: 'track',
+        query: query,
         limit: 50
       },
       (err, data) => {
@@ -31,7 +43,6 @@ SongController.getTrack = (data, cbSuccess, cbError) => {
         }
       }
     );
-    return;
   }
 }
 
