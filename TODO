@@ -1,0 +1,13 @@
+
+    -   Export that data with controller ?
+
+    -   Refactor that file, split ?
+
+    -   Store Controller, Models and Routes.
+
+    -   Send status and data when calling API
+
+    -   Check correct reinit of Database
+
+    -   Better frontend implementation (AjaxTables)
+

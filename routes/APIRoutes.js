@@ -1,9 +1,10 @@
-var express = require('express');
-var router  = express.Router();
-var admin   = require("../controllers/AdminController.js");
-var player  = require("../controllers/PlayerController.js");
-var team    = require("../controllers/TeamController.js");
-var song    = require("../controllers/SongController.js");
+const 
+    express          = require('express'),
+    router           = express.Router(),
+    AdminController  = require('../controllers/AdminController.js'),
+    PlayerController = require('../controllers/PlayerController.js'),
+    TeamController   = require('../controllers/TeamController.js'),
+    SongController   = require('../controllers/SongController.js');
 
 // restrict index for logged in user only
 router.post('/player/update/team', isAuthenticated, player.updateTeam);

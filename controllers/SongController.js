@@ -1,52 +1,87 @@
-const
-    Spotify = require('node-spotify-api'),
-    spotify = new Spotify({
-        id: "3e48054fb42c469bbc677f6e6b4e9e5d",
-        secret: "bd817ef7b478466785fa82f24b74fdd9"
-    }),
-    songController = {};
+const 
+  Spotify     = require('node-spotify-api'),
+  _config     = require('../config'),
+  spotify     = new Spotify({
+    id     : _config.spotify.id,
+    secret : _config.spotify.secret
+  }),
+  SongModel      = require('../models/SongModel').Model,
+  SongController = {};
 
-songController.getTrack = (req, res) => {
-    var track = req.body.track;
-    console.log(track);
-    if (track == "azertyuiop") {
-        res.json({
-            data : [{
-                title : "",
-                artist : "",
-                jacket : ""
-            }]
-        });
-    } else {
-        spotify.search({ 
-            type: 'track', 
-            query: track,
-            limit: 50
-        }, (err, data) => {
-            if (err) {
-              return console.log('Error occurred: ' + err);
-            }
-            var items = data.tracks.items;
-    
-            items.sort(function(a, b) {
-                return b.popularity - a.popularity;
-            })
-            items = items.splice(0, 10);
-
-            for (i = 0; i < items.length; ++i) {
-
-                items[i] = {
-                    title : items[i].name,
-                    artist : items[i].artists[0].name,
-                    jacket : items[i].album.images[0].url
-                }
-            }
-
-            res.json({
-                data : items
-            });
-        });
+SongController.getTrack = (data, cbSuccess, cbError) => {
+  let query = '';
+  if(data.artist) {
+    if(data.artist.trim().length) {
+      query += 'artist:*' + encodeURI(data.artist.trim()).replace(' ', '%20') + '*';
     }
+  }
+  if(data.artist && data.track) {
+    if(data.artist.trim().length && data.track.trim().length) {
+      query += ' AND '; 
+    }
+  }
+  if(data.track) {
+    if(data.track.trim().length) {
+      query += 'track:*' + encodeURI(data.track.trim()).replace(' ', '%20') + '*';
+    }
+  }
+
+  if(query.length == 0) {
+    cbSuccess([]);
+  } else {
+    spotify.search(
+      {
+        type: 'track',
+        query: query,
+        limit: 50
+      },
+      (err, data) => {
+        if (err) {
+          cbError(err);
+        } else {
+          cbSuccess(data);
+        }
+      }
+    );
+  }
 }
 
-module.exports = songController;
+SongController.add = (data, cbSuccess, cbError) => {
+  new SongModel({
+    artist: data.artist,
+    title: data.title,
+    idSpotify: data.idSpotify
+  }).save((err, player) => {
+    if (err) {
+      cbError(err);
+    } else {
+      cbSuccess(player);
+    }
+  });
+};
+
+SongController.remove = (data, cbSuccess, cbError) => {
+  SongModel.remove( {
+      idSpotify: data.idSpotify
+    },
+    (err, song) => {
+      if (err) {
+        cbError(err);
+      } else {
+        cbSuccess(song);
+      }
+    }
+  );
+};
+
+SongController.getAll = (cbSuccess, cbError) => {
+  SongModel.find((err, songs) => {
+    if (err) {
+      cbError(err);
+    } else {
+      cbSuccess(songs);
+    }
+  });
+};
+
+module.exports = SongController;

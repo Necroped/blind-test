@@ -37,11 +37,11 @@ html
       div.content
         if(error) 
           span #{error.message}
-        div#content
+        div#content(data-page='home')
           block content
       
 
-    script(src="https://code.jquery.com/jquery-3.2.1.min.js", integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=", crossorigin="anonymous")
+    script(src='https://code.jquery.com/jquery-3.2.1.min.js', integrity='sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=', crossorigin='anonymous')
     block scripts
     if(admin) 
       script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
@@ -50,19 +50,21 @@ html
       script(src='https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js')
       script(src='/javascripts/jscolor.min.js')
       script(src='/socket.io/socket.io.js')
-      script(src='/javascripts/admin.js') 
+      script(src='/javascripts/Datatables.js')
+      script(src='/javascripts/Ajax.js')
+      script(src='/javascripts/Socket.js')
+      script(src='/javascripts/LoadJS.js')
       script.
-        $(document).on('click', '[action="navigate"]', function () {
+        $(document).on('click', '[action='navigate']', function () {
             var page = $(this).attr('page');
-            console.log(page);
+            $('#content').attr('data-page', page);
             $.ajax({
                 dataType: 'html',
-                url: '/admin/' + page,
-                type: 'GET',
-                success: function(response) {
-                  console.log(response);
+                url:      '/admin/' + page,
+                type:     'GET',
+                success:  function(response) {
                   $('#content').html(response);
-                  reloadContent();
+                  LoadJS.init();
                 }
             });
         });
