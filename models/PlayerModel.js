@@ -1,7 +1,7 @@
 const
     mongoose   = require('mongoose'),
     Schema     = mongoose.Schema,
-    TeamSchema = require("../models/TeamModel").Schema,
+    TeamSchema = require('../models/TeamModel').Schema,
     ObjectId = mongoose.Schema.ObjectId;
 
 const PlayerSchema = new Schema({

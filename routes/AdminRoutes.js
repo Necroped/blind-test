@@ -1,8 +1,8 @@
 const
     express         = require('express'),
     router          = express.Router(),
-    AdminController = require("../controllers/AdminController.js"),
-    TeamController  = require("../controllers/TeamController.js");
+    AdminController = require('../controllers/AdminController.js'),
+    TeamController  = require('../controllers/TeamController.js');
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////// GET //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

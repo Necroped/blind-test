@@ -17,9 +17,9 @@ var LoadJS = function() {
 
     this.initSongs = function() {
 
-        Datatables.initSongs("#songsTable");
+        Datatables.initSongs('#songsTable');
 
-        $("#search_song_input").on("keyup", function() {
+        $('#search_song_input').on('keyup', function() {
             if(Datatables.songs && $(this).val().length >= 3) {
                 Datatables.songs.ajax.reload()
             }
@@ -29,21 +29,21 @@ var LoadJS = function() {
 
     this.initPlayers = function() {
 
-        Datatables.initPlayers("#playersTable");
+        Datatables.initPlayers('#playersTable');
 
     }
 
     this.initTeams = function() {
 
-        Datatables.initTeams("#teamsTable");
-        $("#create_team").click(function() {
+        Datatables.initTeams('#teamsTable');
+        $('#create_team').click(function() {
             Ajax.teamCreate({
-                name  : $("#create_team_name").val(),
-                color : $("#create_team_color").val()
+                name  : $('#create_team_name').val(),
+                color : $('#create_team_color').val()
             }).done(function(data) {
                 Datatables.teams.ajax.reload();
             }).fail(function(err, data) {
-                alert("ERROR : " + JSON.stringify(err))
+                alert('ERROR : ' + JSON.stringify(err))
             });
         });
     }
@@ -51,22 +51,22 @@ var LoadJS = function() {
 
 LoadJS.init = function() {
     
-    var currentPage = $("#content").attr("data-page");
+    var currentPage = $('#content').attr('data-page');
     var loadjs = new LoadJS();
     Datatables.loadjs = loadjs;
 
-    if ($(".jscolor").length > 0) {
-        jscolor.installByClassName("jscolor");
+    if ($('.jscolor').length > 0) {
+        jscolor.installByClassName('jscolor');
     }
 
     switch (currentPage) {
-        case "songs":
+        case 'songs':
             loadjs.initSongs();
             break;
-        case "players":
+        case 'players':
             loadjs.initPlayers();
             break;
-        case "teams":
+        case 'teams':
             loadjs.initTeams();
             break;
         default:

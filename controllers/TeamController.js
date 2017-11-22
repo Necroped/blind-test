@@ -1,7 +1,7 @@
 const
-mongoose       = require("mongoose"),
-TeamModel      = require("../models/TeamModel").Model,
-TeamSchema     = require("../models/TeamModel").Schema,
+mongoose       = require('mongoose'),
+TeamModel      = require('../models/TeamModel').Model,
+TeamSchema     = require('../models/TeamModel').Schema,
 TeamController = {};
 
 TeamController.getAll = (cbSuccess, cbError) => {

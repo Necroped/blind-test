@@ -25,7 +25,7 @@ const
 const
   AdminModel  = require('./models/AdminModel').Model,
   PlayerModel = require('./models/PlayerModel').Model,
-  SongModel   = require("./models/SongModel").Model,
+  SongModel   = require('./models/SongModel').Model,
   TeamModel   = require('./models/TeamModel').Model;
 
 
@@ -46,7 +46,7 @@ function normalizePort( val ) {
 }
 
 /**
- * Event listener for HTTP server "error" event.
+ * Event listener for HTTP server 'error' event.
  */
 function onError( error ) {
   if ( error.syscall !== 'listen' ) {
@@ -71,7 +71,7 @@ function onError( error ) {
 }
 
 /**
- * Event listener for HTTP server "listening" event.
+ * Event listener for HTTP server 'listening' event.
  */
 function onListening() {
   const addr = server.address();
@@ -105,7 +105,7 @@ mongoose.connect(`mongodb://${_config.mongoose.host}:${_config.mongoose.port}/${
 .then(()     => {
   console.log('Connection succesful');
   PlayerModel.remove({}, (err) => console.log('Player base removed')); 
-  SongModel.remove({}, err => console.log("Song base removed"));  
+  SongModel.remove({}, err => console.log('Song base removed'));  
   TeamModel.remove({},   (err) => console.log('Team base removed'));
   AdminModel.remove({},  (err) => {
     console.log('Admin base removed');  

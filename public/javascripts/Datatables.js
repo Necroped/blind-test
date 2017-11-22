@@ -72,44 +72,44 @@ Datatables.initPlayers = function(selector) {
     if ($(selector)) {
         Datatables.players = $(selector).DataTable({
           ajax: {
-            url: "/api/players/all",
-            dataSrc: "data"
+            url: '/api/players/all',
+            dataSrc: 'data'
           },
           columns: [
             {
-              data: "username"
+              data: 'username'
             },
             {
-              data: "connected",
+              data: 'connected',
               render: function(data, type, row, meta) {
                 return '<input type="checkbox" checked=' + data + ' disabled>';
               }
             },
             {
-              data: "score"
+              data: 'score'
             },
             {
-              data: "team",
+              data: 'team',
               render: function(data, type, row, meta) {
-                var sel = $("<select>").attr("value", data);
-                sel.attr("id", row._id);
-                sel.addClass("form-control");
-                sel.attr("onchange", "Ajax.playerUpdateTeam('" + row._id + "')");
+                var sel = $('<select>').attr('value', data);
+                sel.attr('id', row._id);
+                sel.addClass('form-control');
+                sel.attr('onchange', 'Ajax.playerUpdateTeam("' + row._id + '")');
                 sel.append(
-                  $("<option>")
-                    .attr("value", "")
-                    .text("- NONE -")
+                  $('<option>')
+                    .attr('value', '')
+                    .text('- NONE -')
                 );
-                if (typeof Datatables.loadjs.teams !== "undefined" && Datatables.loadjs.teams.length > 0) {
+                if (typeof Datatables.loadjs.teams !== 'undefined' && Datatables.loadjs.teams.length > 0) {
 
                     for (var i = 0; i < Datatables.loadjs.teams.length; i++) {
                       var team = Datatables.loadjs.teams[i];
-                      var option = $("<option>")
-                        .css("background- color", "#" + team.color)
-                        .attr("value", team._id)
+                      var option = $('<option>')
+                        .css('background- color', '#' + team.color)
+                        .attr('value', team._id)
                         .text(team.name);
                       if (team._id == data) {
-                        option.attr("selected", "selected");
+                        option.attr('selected', 'selected');
                       }
                       sel.append(option);
                     }

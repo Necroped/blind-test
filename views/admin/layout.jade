@@ -37,11 +37,11 @@ html
       div.content
         if(error) 
           span #{error.message}
-        div#content(data-page="home")
+        div#content(data-page='home')
           block content
       
 
-    script(src="https://code.jquery.com/jquery-3.2.1.min.js", integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=", crossorigin="anonymous")
+    script(src='https://code.jquery.com/jquery-3.2.1.min.js', integrity='sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=', crossorigin='anonymous')
     block scripts
     if(admin) 
       script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
@@ -55,7 +55,7 @@ html
       script(src='/javascripts/Socket.js')
       script(src='/javascripts/LoadJS.js')
       script.
-        $(document).on('click', '[action="navigate"]', function () {
+        $(document).on('click', '[action='navigate']', function () {
             var page = $(this).attr('page');
             $('#content').attr('data-page', page);
             $.ajax({

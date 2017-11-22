@@ -1,7 +1,7 @@
 const
     express          = require('express'),
     router           = express.Router(),
-    PlayerController = require("../controllers/PlayerController.js");
+    PlayerController = require('../controllers/PlayerController.js');
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

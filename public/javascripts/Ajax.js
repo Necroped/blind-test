@@ -72,19 +72,19 @@ Ajax.songRemove = function(data) {
 
 Ajax.teamCreate = function(data) {
     return $.ajax({
-        dataType    : "json",
-        url         : "/api/teams/create",
-        contentType : "application/json",
-        type        : "POST",
+        dataType    : 'json',
+        url         : '/api/teams/create',
+        contentType : 'application/json',
+        type        : 'POST',
         data        : JSON.stringify({
-            name  : data.name,//$("#create_team_name").val(),
-            color : data.color//$("#create_team_color").val()
+            name  : data.name,//$('#create_team_name').val(),
+            color : data.color//$('#create_team_color').val()
         })
        /*uccess: function(response) {
             if (!response.error) {
                 location.reload();
             } else {
-                alert("error : " + response.error);
+                alert('error : ' + response.error);
             }
         }*/
     });

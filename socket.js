@@ -1,8 +1,8 @@
 const
-    AdminController  = require("./controllers/AdminController.js"),
-    PlayerController = require("./controllers/PlayerController.js"),
-    TeamController   = require("./controllers/TeamController.js"),
-    SongController   = require("./controllers/SongController.js");
+    AdminController  = require('./controllers/AdminController.js'),
+    PlayerController = require('./controllers/PlayerController.js'),
+    TeamController   = require('./controllers/TeamController.js'),
+    SongController   = require('./controllers/SongController.js');
 
 module.exports = (io) => {
     
