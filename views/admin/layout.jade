@@ -55,7 +55,8 @@ html
       script(src='/javascripts/Socket.js')
       script(src='/javascripts/LoadJS.js')
       script.
-        $(document).on('click', '[action='navigate']', function () {
+        $(document).on('click', '[action="navigate"]', function () {
+            console.log('hello')
             var page = $(this).attr('page');
             $('#content').attr('data-page', page);
             $.ajax({
