@@ -69,12 +69,12 @@ router.post('/player/update/team', (req, res) => {
 router.post('/teams/create', (req, res) => {
     if(!req.body.name || !req.body.color) {
         res.json({
-            error: 'Name and Color must be defined',
-            admin: req.user
+            error : 'Name and Color must be defined',
+            admin : req.user
         });
     } else {
         TeamController.create({
-            name : req.body.name,
+            name  : req.body.name,
             color : req.body.color
         }, (data) => {
             res.json({
@@ -87,6 +87,20 @@ router.post('/teams/create', (req, res) => {
             })
         })
     }
+});
+
+
+router.post("/songs/all", (req, res) => {
+  SongController.getAll(
+    data => {
+      res.json({
+        data: data
+      });
+    },
+    err => {
+      res.send(err);
+    }
+  );
 });
 
 router.post('/song/getTrack', isAuthenticated, (req, res) => {
@@ -108,10 +122,10 @@ router.post('/song/getTrack', isAuthenticated, (req, res) => {
         let result = [];
         for (i = 0; i < items.length; ++i) {
           result.push({
-            title:      items[i].name,
-            artist:     items[i].artists[0].name,
-            jacket:     items[i].album.images[0].url,
-            id:         items[i].id
+            title     : items[i].name,
+            artist    : items[i].artists[0].name,
+            cover     : items[i].album.images[0].url,
+            idSpotify : items[i].id
           });
         }
         res.json({
@@ -130,9 +144,10 @@ router.post('/song/getTrack', isAuthenticated, (req, res) => {
 router.post('/song/add', isAuthenticated, (req, res) => {
   SongController.add(
     {
-      artist: req.body.artist,
-      title: req.body.title,
-      idSpotify: req.body.idSpotify
+      artist    : req.body.artist,
+      title     : req.body.title,
+      idSpotify : req.body.idSpotify,
+      cover     : req.body.cover
     },
     data => {
       res.json({

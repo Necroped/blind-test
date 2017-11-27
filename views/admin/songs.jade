@@ -1,10 +1,26 @@
 h1 Songs
-input#search_song_input(placeholder='Search song')
 
-table.table.table-hover.table-striped.table-bordered#songsTable(style='width:100%', cellspacing='0')
+
+button.btn.btn-primary(type='button' data-toggle='modal' data-target='#songsModal') Manage songs
+
+#songsModal.modal(tabindex='-1' role='dialog' aria-labelledby='songManager' aria-hidden='true')
+  .modal-dialog.modal-lg(role='document')
+    .modal-header
+      input#search_song_input.form-control(type='text' placeholder='Search song' aria-label='Search song')
+    .modal-content
+      .modal-body
+        table.table.table-hover.table-striped.table-bordered#searchSongsTable(style='width:100%' cellspacing='0')
+          thead
+            tr
+              th Cover
+              th Title
+              th Artist
+              th Songs
+
+table.table.table-hover.table-striped.table-bordered#songsTable(style='width:100%' cellspacing='0')
   thead
     tr
-      th Jacket
+      th Cover
       th Title
       th Artist
       th Songs

@@ -6,11 +6,11 @@ const
 
 const SongSchema       = new Schema({
   artist    : { type : String, required : true },
-  title     : { type : String, required : true  },
-  idSpotify : { type  : String, unique : true, required : true }
+  title     : { type : String, required : true },
+  idSpotify : { type : String, unique   : true, required : true },
+  cover     : { type : String, required : false }
 });
 
-SongSchema.plugin(passportLocalMongoose);
 SongSchema.plugin(uniqueValidator, {
   message : 'Ce {PATH} {VALUE} est déjà existant.'
 });

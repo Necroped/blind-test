@@ -32,41 +32,28 @@ Ajax.songs = function() {
 
 Ajax.songAdd = function(data) {
     return $.ajax({
-        dataType: 'json',
-        url: '/api/song/add',
-        contentType: 'application/json',
-        type: 'POST',
-        data: JSON.stringify({
+        dataType    : 'json',
+        url         : '/api/song/add',
+        contentType : 'application/json',
+        type        : 'POST',
+        data        : JSON.stringify({
             artist    : data.artist,
             title     : data.title,
-            idSpotify : data.id
-        }),
-        success : function(data) {
-            cb(data);
-        }
-        /*
-        success: function(response) {
-            window.allSongs = getAllSongs();
-            window.songsTable.ajax.reload();
-        }
-        */
+            idSpotify : data.idSpotify,
+            cover     : data.cover
+        })
     });
 };
 
 Ajax.songRemove = function(data) {
     return $.ajax({
-        dataType: 'json',
-        url: '/api/song/remove',
-        contentType: 'application/json',
-        type: 'POST',
-        data: JSON.stringify({
+        dataType    : 'json',
+        url         : '/api/song/remove',
+        contentType : 'application/json',
+        type        : 'POST',
+        data        : JSON.stringify({
             idSpotify: data.id
         })
-        /*,
-        success: function(response) {
-            window.allSongs = getAllSongs();
-            window.songsTable.ajax.reload();
-        }*/
     });
 };
 
@@ -77,15 +64,8 @@ Ajax.teamCreate = function(data) {
         contentType : 'application/json',
         type        : 'POST',
         data        : JSON.stringify({
-            name  : data.name,//$('#create_team_name').val(),
-            color : data.color//$('#create_team_color').val()
+            name  : data.name,
+            color : data.color
         })
-       /*uccess: function(response) {
-            if (!response.error) {
-                location.reload();
-            } else {
-                alert('error : ' + response.error);
-            }
-        }*/
     });
 }

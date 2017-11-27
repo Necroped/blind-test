@@ -1,10 +1,10 @@
+var loadjs;
 var LoadJS = function() {
     
     var _this = this;
 
     this.teams = [];
-    this.songs = [];
-    
+    this.songs = [];   
 
     Ajax.teams().done(function(data) {
         _this.teams = data.data;
@@ -15,22 +15,21 @@ var LoadJS = function() {
     });
 
 
-    this.initSongs = function() {
-
-        Datatables.initSongs('#songsTable');
-
-        $('#search_song_input').on('keyup', function() {
-            if(Datatables.songs && $(this).val().length >= 3) {
-                Datatables.songs.ajax.reload()
+    this.initSearchSongs = function() {
+        Datatables.initSearchSongs("#searchSongsTable");
+            $("#search_song_input").on("keyup", function() {
+            if (Datatables.searchsongs && $(this).val().length >= 3) {
+                Datatables.searchsongs.ajax.reload();
             }
         });
+    };
 
-    }
+    this.initSongs = function() {
+        Datatables.initSongs("#songsTable");
+    };
 
     this.initPlayers = function() {
-
         Datatables.initPlayers('#playersTable');
-
     }
 
     this.initTeams = function() {
@@ -51,8 +50,8 @@ var LoadJS = function() {
 
 LoadJS.init = function() {
     
-    var currentPage = $('#content').attr('data-page');
-    var loadjs = new LoadJS();
+    var currentPage   = $('#content').attr('data-page');
+    loadjs            = new LoadJS();
     Datatables.loadjs = loadjs;
 
     if ($('.jscolor').length > 0) {
@@ -61,6 +60,7 @@ LoadJS.init = function() {
 
     switch (currentPage) {
         case 'songs':
+            loadjs.initSearchSongs();
             loadjs.initSongs();
             break;
         case 'players':
@@ -72,4 +72,23 @@ LoadJS.init = function() {
         default:
             loadjs.initHome();
     }
+};
+
+LoadJS.songAdd = function(data) {
+    Ajax.songAdd(data).done(function() {
+        Ajax.songs().done(function(data) {
+            loadjs.songs = data.data;
+            Datatables.songs.ajax.reload();
+            Datatables.searchsongs.ajax.reload();
+        });
+    });
+};
+LoadJS.songRemove = function(data) {
+    Ajax.songRemove(data).done(function() {
+        Ajax.songs().done(function(data) {
+            loadjs.songs = data.data;
+            Datatables.songs.ajax.reload();
+            Datatables.searchsongs.ajax.reload();
+        });
+    });
 };

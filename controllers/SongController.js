@@ -33,7 +33,7 @@ SongController.getTrack = (data, cbSuccess, cbError) => {
       {
         type: 'track',
         query: query,
-        limit: 50
+        limit: 10//50
       },
       (err, data) => {
         if (err) {
@@ -48,9 +48,10 @@ SongController.getTrack = (data, cbSuccess, cbError) => {
 
 SongController.add = (data, cbSuccess, cbError) => {
   new SongModel({
-    artist: data.artist,
-    title: data.title,
-    idSpotify: data.idSpotify
+    artist    : data.artist,
+    title     : data.title,
+    idSpotify : data.idSpotify,
+    cover     : data.cover
   }).save((err, player) => {
     if (err) {
       cbError(err);

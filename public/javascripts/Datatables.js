@@ -1,5 +1,6 @@
 var Datatables = function() {}
 Datatables.songs;
+Datatables.searchsongs;
 Datatables.teams;
 Datatables.players;
 Datatables.loadjs;
@@ -12,22 +13,22 @@ var dictionnary = {
     infoFiltered : '(filtrée sur _MAX_ données totales)'
 }
 
-Datatables.initSongs = function(selector) {
+Datatables.initSearchSongs = function(selector) {
     if ($(selector)) {
-        Datatables.songs = $(selector).DataTable({
+        Datatables.searchsongs = $(selector).DataTable({
             rowReorder : false,
             ajax       : {
                 url     : '/api/song/getTrack',
                 dataSrc : 'data',
                 type    : 'POST',
                 data    : function(d) {
-                    d.track = $('#search_song_input').val().split(',')[0];
+                    d.track  = $('#search_song_input').val().split(',')[0];
                     d.artist = $('#search_song_input').val().split(',')[1];
                 }
             },
             columns: [
                 {
-                    data        : 'jacket',
+                    data        : 'cover',
                     createdCell : function(td, cellData, rowData, row, col) {
                         $(td).css('background-image', 'url(' + cellData + ')').css('background-repeat', 'no-repeat').css('background-size', '80px 80px').width('80px').html('');
                         $(td).parent().height('80px');
@@ -40,19 +41,26 @@ Datatables.initSongs = function(selector) {
                     data: 'artist'
                 },
                 {
-                    data   : 'id',
+                    data   : 'idSpotify',
                     render : function(data, type, row, meta) {
-                        var isAdded = false;
-                        if (typeof Datatables.loadjs.songs !== 'undefined' && Datatables.loadjs.songs.length > 0) {
-                            for(var i = 0; i > Datatables.loadjs.songs.length; i++) {
-                                if(Datatables.loadjs.songs[i].idSpotify == data) {
-                                    isAdded = true;
-                                    break;
-                                }
-                            }
-                        }
-                        var btn = $('<button>').attr('type', 'button').attr('id', 'addbutton_' + data).addClass('btn').addClass(isAdded == true ? 'btn-danger' : 'btn-success').addClass('btn-block').attr('onclick',(isAdded == true ? 'removeSong' : 'addSong') +'(' +JSON.stringify(row) +')').html(isAdded == true ? 'REMOVE' : 'ADD');
-                        return btn[0].outerHTML;
+                      var isAdded = false;
+                      if (typeof Datatables.loadjs.songs !== 'undefined' && Datatables.loadjs.songs.length > 0) {
+                          for(var i = 0; i < Datatables.loadjs.songs.length; i++) {
+                              if(Datatables.loadjs.songs[i].idSpotify == "" + data) {
+                                  isAdded = true;
+                                  break;
+                              }
+                          }
+                      }
+                      var btn = $("<button>")
+                        .attr("type", "button")
+                        .attr("id", "addbutton_" + data)
+                        .addClass("btn")
+                        .addClass(isAdded == true ? "btn-danger" : "btn-success")
+                        .addClass("btn-block")
+                        .attr("onclick", (isAdded == true ? "LoadJS.songRemove" : "LoadJS.songAdd") + "(" + JSON.stringify(row) + ")")
+                        .html(isAdded == true ? "REMOVE" : "ADD");
+                      return btn[0].outerHTML;
                     }
                 }
             ],
@@ -67,6 +75,77 @@ Datatables.initSongs = function(selector) {
     }
     
 }
+
+Datatables.initSongs = function(selector) {
+  if ($(selector)) {
+    Datatables.songs = $(selector).DataTable({
+      rowReorder: false,
+      ajax: {
+        url     : "/api/songs/all",
+        dataSrc : "data"
+      },
+      columns: [
+        {
+          data: "cover",
+          createdCell: function(td, cellData, rowData, row, col) {
+            $(td)
+              .css("background-image", "url(" + cellData + ")")
+              .css("background-repeat", "no-repeat")
+              .css("background-size", "80px 80px")
+              .width("80px")
+              .html("");
+            $(td)
+              .parent()
+              .height("80px");
+          }
+        },
+        {
+          data: "title"
+        },
+        {
+          data: "artist"
+        },
+        {
+          data: "idSpotify",
+          render: function(data, type, row, meta) {
+          var isAdded = false;
+          if (typeof Datatables.loadjs.songs !== "undefined" && Datatables.loadjs.songs.length > 0) {
+            for (var i = 0; i < Datatables.loadjs.songs.length; i++) {
+              if (Datatables.loadjs.songs[i].idSpotify == "" + data) {
+                isAdded = true;
+                break;
+              }
+            }
+          }
+          var btn = $("<button>")
+            .attr("type", "button")
+            .attr("id", "addbutton_" + data)
+            .addClass("btn")
+            .addClass(isAdded == true ? "btn-danger" : "btn-success")
+            .addClass("btn-block")
+            .attr(
+              "onclick",
+              (isAdded == true ? "LoadJS.songRemove" : "LoadJS.songAdd") +
+                "(" +
+                JSON.stringify(row) +
+                ")"
+            )
+            .html(isAdded == true ? "REMOVE" : "ADD");
+            return btn[0].outerHTML;
+          }
+        }
+      ],
+      language: {
+        lengthMenu   : dictionnary.lengthMenu,
+        zeroRecords  : dictionnary.zeroRecords,
+        info         : dictionnary.info,
+        infoEmpty    : dictionnary.infoEmpty,
+        infoFiltered : dictionnary.infoFiltered
+      }
+    });
+  }
+};
+
 
 Datatables.initPlayers = function(selector) {
     if ($(selector)) {
@@ -119,11 +198,11 @@ Datatables.initPlayers = function(selector) {
             }
           ],
           language: {
-            lengthMenu: dictionnary.lengthMenu,
-            zeroRecords: dictionnary.zeroRecords,
-            info: dictionnary.info,
-            infoEmpty: dictionnary.infoEmpty,
-            infoFiltered: dictionnary.infoFiltered
+            lengthMenu   : dictionnary.lengthMenu,
+            zeroRecords  : dictionnary.zeroRecords,
+            info         : dictionnary.info,
+            infoEmpty    : dictionnary.infoEmpty,
+            infoFiltered : dictionnary.infoFiltered
           }
         });
     }
