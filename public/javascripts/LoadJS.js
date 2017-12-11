@@ -6,15 +6,36 @@ var LoadJS = function() {
     this.teams = [];
     this.songs = [];   
 
+
     Ajax.teams().done(function(data) {
         _this.teams = data.data;
     });
     
     Ajax.songs().done(function(data) {
         _this.songs = data.data;
+        var allIds = [],
+            i      = 0;
+        for (i; i < _this.songs.length; i++) {
+            allIds.push(_this.songs[i].externalId);
+        }
+        DZ.init({
+            appId: '263622',
+            channelUrl: 'http://localhost:3000/',
+            player: {
+                container: 'musicPlayer',
+                width: 800,
+                height: 300,
+                onload: function() {
+                    console.log('Deezer player loaded.');
+                    DZ.player.setBlindTestMode(true);
+                    if(allIds.length > 0) {
+                        DZ.player.playTracks(allIds);
+                    }
+                }
+            }
+        });
     });
-
-
+    
     this.initSearchSongs = function() {
         Datatables.initSearchSongs("#searchSongsTable");
             $("#search_song_input").on("keyup", function() {
@@ -75,18 +96,28 @@ LoadJS.init = function() {
 };
 
 LoadJS.songAdd = function(data) {
+    var songsAddedId = data.externalId;
     Ajax.songAdd(data).done(function() {
         Ajax.songs().done(function(data) {
             loadjs.songs = data.data;
+            DZ.player.addToQueue([songsAddedId]);
             Datatables.songs.ajax.reload();
             Datatables.searchsongs.ajax.reload();
         });
     });
 };
-LoadJS.songRemove = function(data) {
+LoadJS.songRemove = function(data) {    
     Ajax.songRemove(data).done(function() {
         Ajax.songs().done(function(data) {
             loadjs.songs = data.data;
+            var allIds = [],
+                i = 0;
+            if (loadjs.songs.length > 0) {
+              for (i; i < loadjs.songs.length; i++) {
+                allIds.push(loadjs.songs[i].externalId);
+              }
+              DZ.player.playTracks(allIds);
+            }
             Datatables.songs.ajax.reload();
             Datatables.searchsongs.ajax.reload();
         });

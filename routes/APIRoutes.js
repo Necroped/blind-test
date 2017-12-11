@@ -105,8 +105,8 @@ router.post("/songs/all", (req, res) => {
 
 router.post('/song/getTrack', isAuthenticated, (req, res) => {
   SongController.getTrack({
-      track: req.body.track,
-      artist: req.body.artist
+      track  : req.body.track,
+      artist : req.body.artist
     },
     data => {
       if(data.length == 0) {
@@ -115,18 +115,23 @@ router.post('/song/getTrack', isAuthenticated, (req, res) => {
         })
       } else {
 
-
-        let items = data.tracks.items;
-        //items = items.splice(0, 10);
-
+        let items = data.data;
+        
         let result = [];
-        for (i = 0; i < items.length; ++i) {
-          result.push({
-            title     : items[i].name,
-            artist    : items[i].artists[0].name,
-            cover     : items[i].album.images[0].url,
-            idSpotify : items[i].id
+        if(items && items.length > 0) {
+
+          items = items.sort((a, b) => {
+            return b.rank - a.rank;
           });
+
+          for (i = 0; i < items.length; i++) {
+            result.push({
+              title      : items[i].title,
+              artist     : items[i].artist.name,
+              cover      : items[i].album.cover_small,
+              externalId : items[i].id
+            });
+          }
         }
         res.json({
           data: result
@@ -144,10 +149,10 @@ router.post('/song/getTrack', isAuthenticated, (req, res) => {
 router.post('/song/add', isAuthenticated, (req, res) => {
   SongController.add(
     {
-      artist    : req.body.artist,
-      title     : req.body.title,
-      idSpotify : req.body.idSpotify,
-      cover     : req.body.cover
+      artist     : req.body.artist,
+      title      : req.body.title,
+      externalId : req.body.externalId,
+      cover      : req.body.cover
     },
     data => {
       res.json({
@@ -165,7 +170,7 @@ router.post('/song/add', isAuthenticated, (req, res) => {
 router.post('/song/remove', isAuthenticated, (req, res) => {
   SongController.remove(
     {
-      idSpotify: req.body.idSpotify,
+      externalId: req.body.externalId,
     },
     data => {
       res.json({

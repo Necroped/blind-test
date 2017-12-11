@@ -39,7 +39,7 @@ Ajax.songAdd = function(data) {
         data        : JSON.stringify({
             artist    : data.artist,
             title     : data.title,
-            idSpotify : data.idSpotify,
+            externalId : data.externalId,
             cover     : data.cover
         })
     });
@@ -52,7 +52,7 @@ Ajax.songRemove = function(data) {
         contentType : 'application/json',
         type        : 'POST',
         data        : JSON.stringify({
-            idSpotify: data.id
+            externalId: data.externalId
         })
     });
 };

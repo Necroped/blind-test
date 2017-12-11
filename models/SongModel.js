@@ -5,10 +5,10 @@ const
     passportLocalMongoose = require('passport-local-mongoose');
 
 const SongSchema       = new Schema({
-  artist    : { type : String, required : true },
-  title     : { type : String, required : true },
-  idSpotify : { type : String, unique   : true, required : true },
-  cover     : { type : String, required : false }
+  artist     : { type : String, required : true },
+  title      : { type : String, required : true },
+  externalId : { type : Number, unique   : true, required : true },
+  cover      : { type : String, required : false }
 });
 
 SongSchema.plugin(uniqueValidator, {

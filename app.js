@@ -103,6 +103,8 @@ mongoose.connect(`mongodb://${_config.mongoose.host}:${_config.mongoose.port}/${
   useMongoClient: true 
 })
 .then(()     => {
+  // Prevent old keys (E11000 duplicate key error collection)
+  mongoose.connection.db.dropDatabase();
   console.log('Connection succesful');
   PlayerModel.remove({}, (err) => console.log('Player base removed')); 
   SongModel.remove({}, err => console.log('Song base removed'));  
