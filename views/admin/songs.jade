@@ -1,7 +1,19 @@
 h1 Songs
 
+#dz-root(style='display:none')
 #musicPlayer.col-md-12
-  #dz-root
+  .trackinfos
+    span#trackname
+  .btn-group(role='group', aria-label='...')
+    button.btn.btn-default(type='button' onclick='Musicplayer.prev()')
+      span.glyphicon.glyphicon-step-backward(aria-hidden='true')
+    button.btn.btn-default(type='button' onclick='Musicplayer.pause()')
+      span.glyphicon.glyphicon-pause(aria-hidden='true')
+    button.btn.btn-default(type='button' onclick='Musicplayer.play()')
+      span.glyphicon.glyphicon-play(aria-hidden='true')
+    button.btn.btn-default(type='button' onclick='Musicplayer.next()')
+      span.glyphicon.glyphicon-step-forward(aria-hidden='true')
+
 
 button.btn.btn-primary(type='button' data-toggle='modal' data-target='#songsModal') Manage songs
 
