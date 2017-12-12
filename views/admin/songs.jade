@@ -3,7 +3,11 @@ h1 Songs
 #dz-root(style='display:none')
 #musicPlayer.col-md-12
   .trackinfos
-    span#trackname
+    p#trackname_prev
+    hr
+    p#trackname
+    hr
+    p#trackname_next
   .btn-group(role='group', aria-label='...')
     button.btn.btn-default(type='button' onclick='Musicplayer.prev()')
       span.glyphicon.glyphicon-step-backward(aria-hidden='true')

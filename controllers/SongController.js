@@ -1,10 +1,5 @@
 const 
-  Spotify     = require('node-spotify-api'),
   _config     = require('../config'),
-  spotify     = new Spotify({
-    id     : _config.spotify.id,
-    secret : _config.spotify.secret
-  }),
   SongModel      = require('../models/SongModel').Model,
   SongController = {};
   var Deezer = require("deezer-node-api");
