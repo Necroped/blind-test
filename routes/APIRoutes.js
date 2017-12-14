@@ -1,10 +1,11 @@
 const 
-    express          = require('express'),
-    router           = express.Router(),
-    AdminController  = require('../controllers/AdminController.js'),
-    PlayerController = require('../controllers/PlayerController.js'),
-    TeamController   = require('../controllers/TeamController.js'),
-    SongController   = require('../controllers/SongController.js');
+  express            = require("express"),
+  router             = express.Router(),
+  AdminController    = require("../controllers/AdminController.js"),
+  PlayerController   = require("../controllers/PlayerController.js"),
+  TeamController     = require("../controllers/TeamController.js"),
+  CategoryController = require("../controllers/CategoryController.js"),
+  SongController     = require("../controllers/SongController.js");
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -34,8 +35,21 @@ router.get('/teams/all', (req, res) => {
   );
 });
 
-router.get('/songs/all', (req, res) => {
+router.get("/songs/all", (req, res) => {
   SongController.getAll(
+    data => {
+      res.json({
+        data: data
+      });
+    },
+    err => {
+      res.send(err);
+    }
+  );
+});
+
+router.get("/categories/all", (req, res) => {
+  CategoryController.getAll(
     data => {
       res.json({
         data: data
@@ -146,13 +160,13 @@ router.post('/song/getTrack', isAuthenticated, (req, res) => {
   );
 });
 
-router.post('/song/add', isAuthenticated, (req, res) => {
+router.post("/song/add", isAuthenticated, (req, res) => {
   SongController.add(
     {
-      artist     : req.body.artist,
-      title      : req.body.title,
-      externalId : req.body.externalId,
-      cover      : req.body.cover
+      artist: req.body.artist,
+      title: req.body.title,
+      externalId: req.body.externalId,
+      cover: req.body.cover
     },
     data => {
       res.json({
@@ -167,10 +181,10 @@ router.post('/song/add', isAuthenticated, (req, res) => {
   );
 });
 
-router.post('/song/remove', isAuthenticated, (req, res) => {
+router.post("/song/remove", isAuthenticated, (req, res) => {
   SongController.remove(
     {
-      externalId: req.body.externalId,
+      externalId: req.body.externalId
     },
     data => {
       res.json({
@@ -183,6 +197,40 @@ router.post('/song/remove', isAuthenticated, (req, res) => {
       });
     }
   );
+});
+
+
+router.post("/category/add", isAuthenticated, (req, res) => {
+  CategoryController.add(
+    {
+      name: req.body.name,
+      nbSong: req.body.nbSong
+    },
+    data => {
+      res.json({
+        data: data
+      });
+    },
+    err => {
+      res.json({
+        error: err
+      });
+    }
+  );
+});
+
+router.post("/category/remove", isAuthenticated, (req, res) => {
+  CategoryController.remove({ 
+    id: req.body.id 
+  }, data => {
+      res.json({ 
+        data: data 
+      });
+    }, err => {
+      res.json({ 
+        error: err 
+      });
+    });
 });
 
 

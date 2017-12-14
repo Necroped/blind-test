@@ -1,12 +1,12 @@
 const 
   _config     = require('../config'),
   SongModel      = require('../models/SongModel').Model,
-  SongController = {};
-  var Deezer = require("deezer-node-api");
-  var dz = new Deezer();
+  SongController = {},
+  Deezer = require("deezer-node-api"),
+  dz = new Deezer();
 
 SongController.getTrack = (data, cbSuccess, cbError) => {
-  var jsonQuery = {};
+  let jsonQuery = {};
     if (data.artist) {
       if (data.artist.trim().length) {
         jsonQuery.artist = encodeURI(data.artist.trim()).replace(" ", "%20");
