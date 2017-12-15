@@ -1,6 +1,7 @@
 var Musicplayer = function() {}
 
 Musicplayer.tracklist = [];
+Musicplayer.isInit = false;
 
 Musicplayer.updateDOM = function() {
     var prevTrack = Musicplayer.getPrevTrack();
@@ -55,32 +56,34 @@ Musicplayer.isPlaying = function() {
 }
 
 Musicplayer.init = function(songs) {
-
-    DZ.init({
-        appId: '263622',
-        channelUrl: 'http://localhost:3000/',
-        player: {
-            onload: function () {
-                var allIds = [],
+    if(Musicplayer.isInit !== true) {
+        Musicplayer.isInit = true;
+        DZ.init({
+            appId: '263622',
+            channelUrl: 'http://localhost:3000/',
+            player: {
+                onload: function () {
+                    var allIds = [],
                     i = 0;
-                for (i; i < loadjs.songs.length; i++) {
-                    allIds.push(loadjs.songs[i].externalId);
+                    for (i; i < loadjs.songs.length; i++) {
+                        allIds.push(loadjs.songs[i].externalId);
                 }
                 if (allIds.length > 0) {
                     Musicplayer.tracks.init(allIds);
                 }
             },
-            width: 0,
-            height: 0, 
-            /*
+                width: 0,
+                height: 0, 
+                /*
                 container: 'musicPlayer',
-            */
-        }
-    });
-
-    DZ.Event.subscribe('current_track', function(track, evt_name) {
-        Musicplayer.updateDOM();
-    });
+                */
+            }
+        });
+        
+        DZ.Event.subscribe('current_track', function(track, evt_name) {
+            Musicplayer.updateDOM();
+        });
+    }
 }
 
 Musicplayer.tracks = {};

@@ -56,10 +56,10 @@ LoadJS.init = function() {
     if ($('.jscolor').length > 0) {
         jscolor.installByClassName('jscolor');
     }
+    Musicplayer.init(loadjs.songs);
 
     switch (currentPage) {
         case 'songs':
-            Musicplayer.init(loadjs.songs);
             loadjs.initSearchSongs();
             loadjs.initSongs();
             break;

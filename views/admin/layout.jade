@@ -34,6 +34,8 @@ html
                 a(href='/admin/logout') Logout
 
     div.container
+      if(admin)
+        include musicplayer
       div.content
         if(error) 
           span #{error.message}
