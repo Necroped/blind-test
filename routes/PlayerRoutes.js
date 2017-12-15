@@ -1,32 +1,34 @@
-const
-    express          = require('express'),
-    router           = express.Router(),
-    PlayerController = require('../controllers/PlayerController.js');
-
+const express = require('express'),
+  router = express.Router(),
+  PlayerController = require('../controllers/PlayerController.js');
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////// GET //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 router.get('/', isAuthenticated, (req, res) => {
-    PlayerController.findOne({
-        _id : req.session.player._id
-    }, (data) => {
-        res.render('player/index', {
-            player: data
-        })
-    }, (err) => {
-        res.redirect('/player/login');
-    });
+  PlayerController.findOne(
+    {
+      _id: req.session.player._id
+    },
+    data => {
+      res.render('player/index', {
+        player: data
+      });
+    },
+    err => {
+      res.redirect('/player/login');
+    }
+  );
 });
 
 router.get('/login', (req, res) => {
-    res.render('player/login');
+  res.render('player/login');
 });
 
 router.get('/logout', isAuthenticated, (req, res) => {
-    req.logout();
-    res.redirect('/');
+  req.logout();
+  res.redirect('/');
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -34,16 +36,20 @@ router.get('/logout', isAuthenticated, (req, res) => {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 router.post('/login', (req, res) => {
-    PlayerController.connect({
-        username : req.body.username
-    }, (data) => {
-        req.session.player = data;
-        res.redirect('/player');
-    }, (err) => {
-        res.render('error', {
-            error: err
-        });
-    })
+  PlayerController.connect(
+    {
+      username: req.body.username
+    },
+    data => {
+      req.session.player = data;
+      res.redirect('/player');
+    },
+    err => {
+      res.render('error', {
+        error: err
+      });
+    }
+  );
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,10 +57,10 @@ router.post('/login', (req, res) => {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function isAuthenticated(req, res, next) {
-    if (req.session.player) {
-        return next();
-    }
-    res.redirect('/player/login');
+  if (req.session.player) {
+    return next();
+  }
+  res.redirect('/player/login');
 }
 
 module.exports = router;

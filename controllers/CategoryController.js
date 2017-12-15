@@ -1,13 +1,11 @@
-const 
-_config              = require("../config"),
-  CategoryModel      = require("../models/CategoryModel").Model,
+const _config = require('../config'),
+  CategoryModel = require('../models/CategoryModel').Model,
   CategoryController = {};
-
 
 CategoryController.add = (data, cbSuccess, cbError) => {
   new CategoryModel({
-    name   : data.name,
-    nbSong : data.nbSong || 0
+    name: data.name,
+    nbSong: data.nbSong || 0
   }).save((err, player) => {
     if (err) {
       cbError(err);

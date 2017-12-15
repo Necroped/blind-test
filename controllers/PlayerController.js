@@ -1,31 +1,27 @@
-const
-  mongoose         = require('mongoose'),
-  passport         = require('passport'),
-  session          = require('express-session'),
-  PlayerModel      = require('../models/PlayerModel').Model,
+const mongoose = require('mongoose'),
+  passport = require('passport'),
+  session = require('express-session'),
+  PlayerModel = require('../models/PlayerModel').Model,
   PlayerController = {};
 
 // Restrict access to root page
 PlayerController.findOne = (request, cbSuccess, cbError) => {
-  PlayerModel.findOne(
-    request, (err, player) => {
+  PlayerModel.findOne(request, (err, player) => {
     if (err) {
       cbError(err);
     } else {
       cbSuccess(player);
     }
   });
-}
-
+};
 
 // Post login
 PlayerController.connect = (data, cbSuccess, cbError) => {
-  new PlayerModel({ 
-    username:  data.username,
-    score:     0,
+  new PlayerModel({
+    username: data.username,
+    score: 0,
     connected: true
-  })
-  .save(function (err, player) {
+  }).save(function(err, player) {
     if (err) {
       cbError(err);
     } else {
@@ -37,27 +33,29 @@ PlayerController.connect = (data, cbSuccess, cbError) => {
 // Restrict access to root page
 PlayerController.getAll = (cbSuccess, cbError) => {
   PlayerModel.find((err, players) => {
-    if(err)  {
+    if (err) {
       cbError(err);
     } else {
-      cbSuccess(players)
+      cbSuccess(players);
     }
   });
 };
 
 // Restrict access to root page
 PlayerController.update = (data, cbSuccess, cbError) => {
-  PlayerModel.update({ 
-    _id: data.player_id
-  }, 
-  data.action, 
-  (err, player) => {
-    if (err) {
-      cbError(err);
-    } else {
-      cbSuccess(player)
+  PlayerModel.update(
+    {
+      _id: data.player_id
+    },
+    data.action,
+    (err, player) => {
+      if (err) {
+        cbError(err);
+      } else {
+        cbSuccess(player);
+      }
     }
-  });
+  );
 };
 
 module.exports = PlayerController;
