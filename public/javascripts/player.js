@@ -1,11 +1,12 @@
 var socket = io('http://localhost:3000');
 
-socket.emit('connected', {
+socket.emit('player/new', {
   player_id: $('#playerid_hidden').val()
 });
 
-$('#click').click(() => {
+$('#click').click(function() {
   socket.emit('player/click', {
+    player_id: $('#playerid_hidden').val(),
     time: Date.now()
   });
 });

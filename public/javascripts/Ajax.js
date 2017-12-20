@@ -22,6 +22,14 @@ Ajax.teams = function() {
   });
 };
 
+Ajax.players = function() {
+  return $.ajax({
+    dataType: 'json',
+    url: '/api/players/all',
+    type: 'GET'
+  });
+};
+
 Ajax.songs = function() {
   return $.ajax({
     dataType: 'json',
@@ -66,6 +74,19 @@ Ajax.teamCreate = function(data) {
     data: JSON.stringify({
       name: data.name,
       color: data.color
+    })
+  });
+};
+
+Ajax.getPlayer = function(data) {
+  console.log('Ajax.getplayer(' + data._id + ')');
+  return $.ajax({
+    dataType: 'json',
+    url: '/api/player/get',
+    contentType: 'application/json',
+    type: 'POST',
+    data: JSON.stringify({
+      _id: data._id
     })
   });
 };

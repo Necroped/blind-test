@@ -4,14 +4,25 @@ var LoadJS = function() {
 
   this.teams = [];
   this.songs = [];
+  this.players = [];
 
-  Ajax.teams().done(function(data) {
-    _this.teams = data.data;
-  });
+  this.getTeams = function() {
+    Ajax.teams().done(function(data) {
+      _this.teams = data.data;
+    });
+  };
 
-  Ajax.songs().done(function(data) {
-    _this.songs = data.data;
-  });
+  this.getSongs = function() {
+    Ajax.songs().done(function(data) {
+      _this.songs = data.data;
+    });
+  };
+
+  this.getPlayers = function() {
+    Ajax.players().done(function(data) {
+      _this.players = data.data;
+    });
+  };
 
   this.initSearchSongs = function() {
     Datatables.initSearchSongs('#searchSongsTable');
@@ -45,11 +56,33 @@ var LoadJS = function() {
         });
     });
   };
+
+  this.songAdd = function(data) {
+    var songsAddedId = data.externalId;
+    Ajax.songAdd(data).done(function() {
+      loadjs.getSongs();
+      Musicplayer.tracks.add(songsAddedId);
+      Datatables.songs.ajax.reload();
+      Datatables.searchsongs.ajax.reload();
+    });
+  };
+  this.songRemove = function(data) {
+    var trackId = data.externalId;
+    Ajax.songRemove(data).done(function() {
+      loadjs.getSongs();
+      Musicplayer.tracks.remove(trackId);
+      Datatables.songs.ajax.reload();
+      Datatables.searchsongs.ajax.reload();
+    });
+  };
 };
 
 LoadJS.init = function() {
   var currentPage = $('#content').attr('data-page');
   loadjs = new LoadJS();
+  loadjs.getTeams();
+  loadjs.getSongs();
+  loadjs.getPlayers();
   Datatables.loadjs = loadjs;
 
   if ($('.jscolor').length > 0) {
@@ -71,27 +104,4 @@ LoadJS.init = function() {
     default:
       loadjs.initHome();
   }
-};
-
-LoadJS.songAdd = function(data) {
-  var songsAddedId = data.externalId;
-  Ajax.songAdd(data).done(function() {
-    Ajax.songs().done(function(data) {
-      loadjs.songs = data.data;
-      Musicplayer.tracks.add(songsAddedId);
-      Datatables.songs.ajax.reload();
-      Datatables.searchsongs.ajax.reload();
-    });
-  });
-};
-LoadJS.songRemove = function(data) {
-  var trackId = data.externalId;
-  Ajax.songRemove(data).done(function() {
-    Ajax.songs().done(function(data) {
-      loadjs.songs = data.data;
-      Musicplayer.tracks.remove(trackId);
-      Datatables.songs.ajax.reload();
-      Datatables.searchsongs.ajax.reload();
-    });
-  });
 };

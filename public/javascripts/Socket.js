@@ -15,9 +15,13 @@ socket.emit('admin/connected', {
   username: $('#username_hidden').val()
 });
 socket.on('player/click', data => {
-  var player = data.player;
   var time = data.time;
-  alert(
-    player.username + ' clicked at : ' + new Date(time).toLocaleTimeString()
-  );
+  Ajax.getPlayer({ _id: data.player_id }).done(function(player) {
+    console.log(player);
+    $('#answer_modal').modal();
+    $('#playername_answer_modal').html(player.username);
+    alert(
+      player.username + ' clicked at : ' + new Date(time).toLocaleTimeString()
+    );
+  });
 });

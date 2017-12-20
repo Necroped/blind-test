@@ -24,17 +24,10 @@ module.exports = io => {
       socket.join('admin_room');
     });
     socket.on('player/click', data => {
-      PlayerController.findOne(
-        {
-          socket: socket.id
-        },
-        player => {
-          io.to('admin_room').emit('player/click', {
-            player: player,
-            time: data.time
-          });
-        }
-      );
+      io.to('admin_room').emit('player/click', {
+        player_id: data.player_id,
+        time: data.time
+      });
     });
   });
 };

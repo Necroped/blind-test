@@ -74,7 +74,9 @@ Datatables.initSearchSongs = function(selector) {
               .addClass('btn-block')
               .attr(
                 'onclick',
-                (isAdded == true ? 'LoadJS.songRemove' : 'LoadJS.songAdd') +
+                (isAdded == true
+                  ? 'Datatables.loadjs.songRemove'
+                  : 'Datatables.loadjs.songAdd') +
                   '(' +
                   JSON.stringify(row) +
                   ')'
@@ -147,7 +149,9 @@ Datatables.initSongs = function(selector) {
               .addClass('btn-block')
               .attr(
                 'onclick',
-                (isAdded == true ? 'LoadJS.songRemove' : 'LoadJS.songAdd') +
+                (isAdded == true
+                  ? 'Datatables.loadjs.songRemove'
+                  : 'Datatables.loadjs.songAdd') +
                   '(' +
                   JSON.stringify(row) +
                   ')'
