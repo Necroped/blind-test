@@ -79,7 +79,6 @@ Ajax.teamCreate = function(data) {
 };
 
 Ajax.getPlayer = function(data) {
-  console.log('Ajax.getplayer(' + data._id + ')');
   return $.ajax({
     dataType: 'json',
     url: '/api/player/get',
@@ -87,6 +86,20 @@ Ajax.getPlayer = function(data) {
     type: 'POST',
     data: JSON.stringify({
       _id: data._id
+    })
+  });
+};
+
+Ajax.getModal = function(modalName, params) {
+  console.log(modalName);
+  return $.ajax({
+    dataType: 'html',
+    url: '/api/modal',
+    contentType: 'application/json',
+    type: 'POST',
+    data: JSON.stringify({
+      modal: modalName,
+      params: params
     })
   });
 };

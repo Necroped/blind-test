@@ -5,7 +5,7 @@ const AdminController = require('./controllers/AdminController.js'),
 
 module.exports = io => {
   io.on('connection', socket => {
-    socket.on('connected', data => {
+    socket.on('player/new', data => {
       let player_id = data.player_id,
         action = { $set: { socket: socket.id } };
       PlayerController.update(

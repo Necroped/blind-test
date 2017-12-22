@@ -16,12 +16,21 @@ socket.emit('admin/connected', {
 });
 socket.on('player/click', data => {
   var time = data.time;
-  Ajax.getPlayer({ _id: data.player_id }).done(function(player) {
-    console.log(player);
-    $('#answer_modal').modal();
-    $('#playername_answer_modal').html(player.username);
-    alert(
-      player.username + ' clicked at : ' + new Date(time).toLocaleTimeString()
-    );
+  Musicplayer.pause;
+  Ajax.getPlayer({
+    _id: data.player_id
+  }).done(function(player) {
+    $('#answer_modal').remove();
+    Ajax.getModal('answer', {
+      player: player,
+      time: time,
+      track: Musicplayer.getCurrentTrack()
+    }).done(function(modal) {
+      $('#modals').append(modal);
+      $('#answer_modal').modal();
+      $('#answer_modal').on('hidden.bs.modal', function() {
+        Musicplayer.next();
+      });
+    });
   });
 });
