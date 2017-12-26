@@ -31,14 +31,8 @@ PlayerController.connect = (data, cbSuccess, cbError) => {
 };
 
 // Restrict access to root page
-PlayerController.getAll = (cbSuccess, cbError) => {
-  PlayerModel.find((err, players) => {
-    if (err) {
-      cbError(err);
-    } else {
-      cbSuccess(players);
-    }
-  });
+PlayerController.getAll = () => {
+  return PlayerModel.find();
 };
 
 // Restrict access to root page

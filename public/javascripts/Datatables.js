@@ -177,7 +177,7 @@ Datatables.initPlayers = function(selector) {
     Datatables.players = $(selector).DataTable({
       ajax: {
         url: '/api/players/all',
-        dataSrc: 'data'
+        dataSrc: ''
       },
       columns: [
         {

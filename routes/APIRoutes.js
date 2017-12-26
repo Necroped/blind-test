@@ -11,16 +11,15 @@ const express = require('express'),
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 router.get('/players/all', (req, res) => {
-  PlayerController.getAll(
-    data => {
-      res.json({
-        data: data
-      });
-    },
-    err => {
-      res.send(err);
-    }
-  );
+  PlayerController.getAll()
+    .then((data, err) => {
+      if(err) {
+        res.status(500).send(err);
+      }
+      else {
+        res.json(data)  
+      }
+    })
 });
 
 router.get('/teams/all', (req, res) => {
@@ -77,7 +76,6 @@ router.post('/player/get', (req, res) => {
 router.post('/modal', (req, res) => {
   let modalName = req.body.modal;
   let params = req.body.params;
-  console.log('route modal ' + modalName);
   res.render('admin/modals/' + modalName, params);
 });
 
