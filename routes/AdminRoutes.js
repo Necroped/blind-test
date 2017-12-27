@@ -50,36 +50,23 @@ router.get('/login', (req, res) => {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 router.post('/register', isAuthenticated, (req, res) => {
-  AdminController.new(
-    {
-      username: req.body.username,
-      password: req.body.password
-    },
-    data => {
-      res.redirect('/admin', {
-        admin: data
-      });
-    }
-  );
+  AdminController.new({
+    username: req.body.username,
+    password: req.body.password
+  }).then(data => {
+    res.redirect('/admin', {
+      admin: data
+    });
+  });
 });
 
 router.post('/team/create', isAuthenticated, (req, res) => {
-  TeamController.create(
-    {
-      name: req.body.name,
-      color: req.body.color
-    },
-    data => {
-      res.json({
-        success: true
-      });
-    },
-    err => {
-      res.json({
-        error: err
-      });
-    }
-  );
+  TeamController.create({
+    name: req.body.name,
+    color: req.body.color
+  }).then(data => {
+    res.json(data);
+  });
 });
 
 router.post('/login', (req, res) => {

@@ -8,19 +8,12 @@ const mongoose = require('mongoose'),
   TeamSchema = require('../models/TeamModel').Schema,
   AdminController = {};
 
-AdminController.new = (data, cbSuccess, cbError) => {
-  AdminModel.register(
+AdminController.new = data => {
+  return AdminModel.register(
     new AdminModel({
       username: data.username
     }),
-    data.password,
-    (err, admin) => {
-      if (err) {
-        cbError(err, admin);
-      } else {
-        cbSuccess(admin);
-      }
-    }
+    data.password
   );
 };
 

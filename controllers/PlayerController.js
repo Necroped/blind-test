@@ -5,29 +5,17 @@ const mongoose = require('mongoose'),
   PlayerController = {};
 
 // Restrict access to root page
-PlayerController.findOne = (request, cbSuccess, cbError) => {
-  PlayerModel.findOne(request, (err, player) => {
-    if (err) {
-      cbError(err);
-    } else {
-      cbSuccess(player);
-    }
-  });
+PlayerController.findOne = request => {
+  return PlayerModel.findOne(request);
 };
 
 // Post login
-PlayerController.connect = (data, cbSuccess, cbError) => {
-  new PlayerModel({
+PlayerController.connect = data => {
+  return new PlayerModel({
     username: data.username,
     score: 0,
     connected: true
-  }).save(function(err, player) {
-    if (err) {
-      cbError(err);
-    } else {
-      cbSuccess(player);
-    }
-  });
+  }).save();
 };
 
 // Restrict access to root page
@@ -36,20 +24,8 @@ PlayerController.getAll = () => {
 };
 
 // Restrict access to root page
-PlayerController.update = (data, cbSuccess, cbError) => {
-  PlayerModel.update(
-    {
-      _id: data.player_id
-    },
-    data.action,
-    (err, player) => {
-      if (err) {
-        cbError(err);
-      } else {
-        cbSuccess(player);
-      }
-    }
-  );
+PlayerController.update = data => {
+  return PlayerModel.update({ _id: data.player_id }, data.action);
 };
 
 module.exports = PlayerController;

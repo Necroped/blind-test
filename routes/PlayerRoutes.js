@@ -7,19 +7,14 @@ const express = require('express'),
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 router.get('/', isAuthenticated, (req, res) => {
-  PlayerController.findOne(
-    {
-      _id: req.session.player._id
-    },
-    data => {
-      res.render('player/index', {
-        player: data
-      });
-    },
-    err => {
-      res.redirect('/player/login');
-    }
-  );
+  PlayerController.findOne({
+    _id: req.session.player._id
+  }).then((data, err) => {
+    if (err) res.redirect('/player/login');
+    res.render('player/index', {
+      player: data
+    });
+  });
 });
 
 router.get('/login', (req, res) => {
@@ -36,20 +31,16 @@ router.get('/logout', isAuthenticated, (req, res) => {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 router.post('/login', (req, res) => {
-  PlayerController.connect(
-    {
-      username: req.body.username
-    },
-    data => {
+  PlayerController.connect({
+    username: req.body.username
+  })
+    .then(data => {
       req.session.player = data;
       res.redirect('/player');
-    },
-    err => {
-      res.render('error', {
-        error: err
-      });
-    }
-  );
+    })
+    .catch(err => {
+      res.render('error', { error: err });
+    });
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

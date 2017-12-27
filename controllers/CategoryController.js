@@ -2,42 +2,19 @@ const _config = require('../config'),
   CategoryModel = require('../models/CategoryModel').Model,
   CategoryController = {};
 
-CategoryController.add = (data, cbSuccess, cbError) => {
-  new CategoryModel({
+CategoryController.add = data => {
+  return new CategoryModel({
     name: data.name,
     nbSong: data.nbSong || 0
-  }).save((err, player) => {
-    if (err) {
-      cbError(err);
-    } else {
-      cbSuccess(player);
-    }
-  });
+  }).save();
 };
 
-CategoryController.remove = (data, cbSuccess, cbError) => {
-  CategoryModel.remove(
-    {
-      _id: data.id
-    },
-    (err, Category) => {
-      if (err) {
-        cbError(err);
-      } else {
-        cbSuccess(Category);
-      }
-    }
-  );
+CategoryController.remove = data => {
+  return CategoryModel.remove({ _id: data.id });
 };
 
-CategoryController.getAll = (cbSuccess, cbError) => {
-  CategoryModel.find((err, Categories) => {
-    if (err) {
-      cbError(err);
-    } else {
-      cbSuccess(Categories);
-    }
-  });
+CategoryController.getAll = () => {
+  return CategoryModel.find();
 };
 
 module.exports = CategoryController;

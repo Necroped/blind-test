@@ -11,72 +11,39 @@ const express = require('express'),
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 router.get('/players/all', (req, res) => {
-  PlayerController.getAll()
-    .then((data, err) => {
-      if(err) {
-        res.status(500).send(err);
-      }
-      else {
-        res.json(data)  
-      }
-    })
+  PlayerController.getAll().then(data => {
+    res.json(data);
+  });
 });
 
 router.get('/teams/all', (req, res) => {
-  TeamController.getAll(
-    data => {
-      res.json({
-        data: data
-      });
-    },
-    err => {
-      res.send(err);
-    }
-  );
+  TeamController.getAll().then(data => {
+    res.json(data);
+  });
 });
 
 router.get('/songs/all', (req, res) => {
-  SongController.getAll(
-    data => {
-      res.json({
-        data: data
-      });
-    },
-    err => {
-      res.send(err);
-    }
-  );
+  SongController.getAll().then(data => {
+    res.json(data);
+  });
 });
 
 router.get('/categories/all', (req, res) => {
-  CategoryController.getAll(
-    data => {
-      res.json({
-        data: data
-      });
-    },
-    err => {
-      res.send(err);
-    }
-  );
+  CategoryController.getAll().then(data => {
+    res.json(data);
+  });
 });
 
 router.post('/player/get', (req, res) => {
-  let _id = req.body._id;
-  PlayerController.findOne(
-    {
-      _id: _id
-    },
-    data => {
-      res.json(data);
-    }
-  );
+  PlayerController.findOne({
+    _id: req.body._id
+  }).then(data => {
+    res.json(data);
+  });
 });
 
 router.post('/modal', (req, res) => {
-  let modalName = req.body.modal;
-  let params = req.body.params;
-  res.render('admin/modals/' + modalName, params);
+  res.render('admin/modals/' + req.body.modal, req.body.params);
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,175 +57,93 @@ router.post('/player/update/team', (req, res) => {
       team_id.length > 0
         ? { $set: { team: team_id } }
         : { $unset: { team: true } };
-  PlayerController.update(
-    {
-      player_id: player_id,
-      action: action
-    },
-    data => {
-      res.json({
-        success: true
-      });
-    }
-  );
+  PlayerController.update({
+    player_id: player_id,
+    action: action
+  }).then(data => {
+    res.json(data);
+  });
 });
 
 router.post('/teams/create', (req, res) => {
-  if (!req.body.name || !req.body.color) {
-    res.json({
-      error: 'Name and Color must be defined',
-      admin: req.user
-    });
-  } else {
-    TeamController.create(
-      {
-        name: req.body.name,
-        color: req.body.color
-      },
-      data => {
-        res.json({
-          admin: req.user
-        });
-      },
-      err => {
-        res.json({
-          error: err,
-          admin: req.user
-        });
-      }
-    );
-  }
+  TeamController.create({
+    name: req.body.name,
+    color: req.body.color
+  }).then(data => {
+    res.json(data);
+  });
 });
 
 router.post('/songs/all', (req, res) => {
-  SongController.getAll(
-    data => {
-      res.json({
-        data: data
-      });
-    },
-    err => {
-      res.send(err);
-    }
-  );
+  SongController.getAll().then(data => {
+    res.json(data);
+  });
 });
 
 router.post('/song/getTrack', isAuthenticated, (req, res) => {
-  SongController.getTrack(
-    {
-      track: req.body.track,
-      artist: req.body.artist
-    },
-    data => {
-      if (data.length == 0) {
-        res.json({
-          data: data
+  SongController.getTrack({
+    track: req.body.track,
+    artist: req.body.artist
+  }).then(data => {
+    if (data.length == 0) {
+      res.json(data);
+    } else {
+      let items = data.data,
+        result = [],
+        i;
+      if (items && items.length > 0) {
+        items = items.sort((a, b) => {
+          return b.rank - a.rank;
         });
-      } else {
-        let items = data.data;
 
-        let result = [];
-        if (items && items.length > 0) {
-          items = items.sort((a, b) => {
-            return b.rank - a.rank;
+        for (i = 0; i < items.length; i++) {
+          result.push({
+            title: items[i].title,
+            artist: items[i].artist.name,
+            cover: items[i].album.cover_small,
+            externalId: items[i].id
           });
-
-          for (i = 0; i < items.length; i++) {
-            result.push({
-              title: items[i].title,
-              artist: items[i].artist.name,
-              cover: items[i].album.cover_small,
-              externalId: items[i].id
-            });
-          }
         }
-        res.json({
-          data: result
-        });
       }
-    },
-    (err, data) => {
-      res.json({
-        error: err
-      });
+      res.json(result);
     }
-  );
+  });
 });
 
 router.post('/song/add', isAuthenticated, (req, res) => {
-  SongController.add(
-    {
-      artist: req.body.artist,
-      title: req.body.title,
-      externalId: req.body.externalId,
-      cover: req.body.cover
-    },
-    data => {
-      res.json({
-        data: data
-      });
-    },
-    err => {
-      res.json({
-        error: err
-      });
-    }
-  );
+  SongController.add({
+    artist: req.body.artist,
+    title: req.body.title,
+    externalId: req.body.externalId,
+    cover: req.body.cover
+  }).then(data => {
+    res.json(data);
+  });
 });
 
 router.post('/song/remove', isAuthenticated, (req, res) => {
-  SongController.remove(
-    {
-      externalId: req.body.externalId
-    },
-    data => {
-      res.json({
-        data: data
-      });
-    },
-    err => {
-      res.json({
-        error: err
-      });
-    }
-  );
+  SongController.remove({
+    externalId: req.body.externalId
+  }).then(data => {
+    res.json(data);
+  });
 });
 
 router.post('/category/add', isAuthenticated, (req, res) => {
-  CategoryController.add(
-    {
-      name: req.body.name,
-      nbSong: req.body.nbSong
-    },
-    data => {
-      res.json({
-        data: data
-      });
-    },
-    err => {
-      res.json({
-        error: err
-      });
-    }
-  );
+  CategoryController.add({
+    name: req.body.name,
+    nbSong: req.body.nbSong
+  }).then(data => {
+    res.json(data);
+  });
 });
 
 router.post('/category/remove', isAuthenticated, (req, res) => {
-  CategoryController.remove(
-    {
-      id: req.body.id
-    },
-    data => {
-      res.json({
-        data: data
-      });
-    },
-    err => {
-      res.json({
-        error: err
-      });
-    }
-  );
+  CategoryController.remove({
+    id: req.body.id
+  }).then(data => {
+    res.json(data);
+  });
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

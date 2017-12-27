@@ -8,19 +8,19 @@ var LoadJS = function() {
 
   this.getTeams = function() {
     Ajax.teams().done(function(data) {
-      _this.teams = data.data;
+      _this.teams = data;
     });
   };
 
   this.getSongs = function() {
     Ajax.songs().done(function(data) {
-      _this.songs = data.data;
+      _this.songs = data;
     });
   };
 
   this.getPlayers = function() {
     Ajax.players().done(function(data) {
-      _this.players = data.data;
+      _this.players = data;
     });
   };
 

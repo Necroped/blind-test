@@ -4,7 +4,7 @@ const _config = require('../config'),
   Deezer = require('deezer-node-api'),
   dz = new Deezer();
 
-SongController.getTrack = (data, cbSuccess, cbError) => {
+SongController.getTrack = data => {
   let jsonQuery = {};
   if (data.artist) {
     if (data.artist.trim().length) {
@@ -16,54 +16,24 @@ SongController.getTrack = (data, cbSuccess, cbError) => {
       jsonQuery.track = encodeURI(data.track.trim()).replace(' ', '%20');
     }
   }
-  dz
-    .findTracks(jsonQuery)
-    .then(data => {
-      cbSuccess(data);
-    })
-    .catch((err, data) => {
-      cbErrorr(err);
-    });
+  return dz.findTracks(jsonQuery);
 };
 
-SongController.add = (data, cbSuccess, cbError) => {
-  new SongModel({
+SongController.add = data => {
+  return new SongModel({
     artist: data.artist,
     title: data.title,
     externalId: data.externalId,
     cover: data.cover
-  }).save((err, player) => {
-    if (err) {
-      cbError(err);
-    } else {
-      cbSuccess(player);
-    }
-  });
+  }).save();
 };
 
-SongController.remove = (data, cbSuccess, cbError) => {
-  SongModel.remove(
-    {
-      externalId: data.externalId
-    },
-    (err, song) => {
-      if (err) {
-        cbError(err);
-      } else {
-        cbSuccess(song);
-      }
-    }
-  );
+SongController.remove = data => {
+  return SongModel.remove({ externalId: data.externalId });
 };
 
-SongController.getAll = (cbSuccess, cbError) => {
-  SongModel.find((err, songs) => {
-    if (err) {
-      cbError(err);
-    } else {
-      cbSuccess(songs);
-    }
-  });
+SongController.getAll = () => {
+  return SongModel.find();
 };
 
 module.exports = SongController;

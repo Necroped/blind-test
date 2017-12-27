@@ -19,7 +19,7 @@ Datatables.initSearchSongs = function(selector) {
       ordering: false,
       ajax: {
         url: '/api/song/getTrack',
-        dataSrc: 'data',
+        dataSrc: '',
         type: 'POST',
         data: function(d) {
           d.track = $('#search_song_input')
@@ -103,7 +103,7 @@ Datatables.initSongs = function(selector) {
       ordering: false,
       ajax: {
         url: '/api/songs/all',
-        dataSrc: 'data'
+        dataSrc: ''
       },
       columns: [
         {
@@ -240,7 +240,7 @@ Datatables.initTeams = function(selector) {
     Datatables.teams = $(selector).DataTable({
       ajax: {
         url: '/api/teams/all',
-        dataSrc: 'data'
+        dataSrc: ''
       },
       columns: [
         {

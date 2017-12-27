@@ -6,27 +6,11 @@ const mongoose = require('mongoose'),
   ObjectId = mongoose.Schema.ObjectId;
 
 const SongSchema = new Schema({
-  artist: {
-    type: String,
-    required: true
-  },
-  title: {
-    type: String,
-    required: true
-  },
-  externalId: {
-    type: Number,
-    unique: true,
-    required: true
-  },
-  cover: {
-    type: String,
-    required: false
-  },
-  category: {
-    type: ObjectId,
-    ref: 'CategorySchema'
-  }
+  artist: { type: String, required: true },
+  title: { type: String, required: true },
+  externalId: { type: Number, unique: true, required: true },
+  cover: { type: String, required: false },
+  category: { type: ObjectId, ref: 'CategorySchema' }
 });
 
 SongSchema.plugin(uniqueValidator, {
