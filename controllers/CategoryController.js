@@ -1,5 +1,4 @@
-const _config = require('../config'),
-  CategoryModel = require('../models/CategoryModel').Model,
+const CategoryModel = require('../models/CategoryModel').Model,
   CategoryController = {};
 
 CategoryController.add = data => {

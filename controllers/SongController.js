@@ -1,8 +1,5 @@
-const _config = require('../config'),
-  SongModel = require('../models/SongModel').Model,
-  SongController = {},
-  Deezer = require('deezer-node-api'),
-  dz = new Deezer();
+const SongModel = require('../models/SongModel').Model,
+  SongController = {};
 
 SongController.getTrack = data => {
   let jsonQuery = {};

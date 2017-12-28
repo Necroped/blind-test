@@ -1,6 +1,4 @@
-const mongoose = require('mongoose'),
-  TeamModel = require('../models/TeamModel').Model,
-  TeamSchema = require('../models/TeamModel').Schema,
+const TeamModel = require('../models/TeamModel').Model,
   TeamController = {};
 
 TeamController.getAll = () => {

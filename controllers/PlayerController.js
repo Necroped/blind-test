@@ -1,7 +1,4 @@
-const mongoose = require('mongoose'),
-  passport = require('passport'),
-  session = require('express-session'),
-  PlayerModel = require('../models/PlayerModel').Model,
+const PlayerModel = require('../models/PlayerModel').Model,
   PlayerController = {};
 
 // Restrict access to root page
@@ -19,8 +16,8 @@ PlayerController.connect = data => {
 };
 
 // Restrict access to root page
-PlayerController.getAll = () => {
-  return PlayerModel.find();
+PlayerController.getAll = data => {
+  return PlayerModel.find(data);
 };
 
 // Restrict access to root page

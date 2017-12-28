@@ -9,3 +9,17 @@ table.table.table-hover.table-striped.table-bordered#teamsTable(style='width:100
       th Name
       th Color
 input#username_hidden(type='hidden', value=admin.username)
+
+!{JSON.stringify(data)}
+
+.list-group
+  a.list-group-item.clearfix(onclick="alert('Action1 -> Details');")
+    | Action1
+    span.pull-right
+      span.btn.btn-xs.btn-default(onclick="alert('Action1 -> Play'); event.stopPropagation();")
+        span.glyphicon.glyphicon-play(aria-hidden='true')
+  a.list-group-item.clearfix(onclick="alert('Action2 -> Details');")
+    | Action2
+    span.pull-right
+      span.btn.btn-xs.btn-default(onclick="alert('Action2 -> Play'); event.stopPropagation();")
+        span.glyphicon.glyphicon-play(aria-hidden='true')
