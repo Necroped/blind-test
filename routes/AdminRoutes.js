@@ -2,6 +2,7 @@ const express = require('express'),
   router = express.Router(),
   passport = require('passport'),
   AdminController = require('../controllers/AdminController.js'),
+  PlayerController = require('../controllers/PlayerController.js'),
   TeamController = require('../controllers/TeamController.js');
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,8 +22,12 @@ router.get('/players', isAuthenticated, (req, res) => {
 });
 
 router.get('/teams', isAuthenticated, (req, res) => {
-  res.render('admin/teams', {
-    admin: req.user
+  TeamController.getAll().then(teams => {
+    console.log(teams);
+    res.render('admin/teams', {
+      admin: req.user,
+      teams: teams
+    });
   });
 });
 

@@ -52,15 +52,20 @@ router.post('/modal', (req, res) => {
 
 router.post('/player/update/team', (req, res) => {
   let player_id = req.body.player_id,
-    team_id = req.body.team_id,
-    action =
-      team_id.length > 0
-        ? { $set: { team: team_id } }
-        : { $unset: { team: true } };
-  PlayerController.update({
-    player_id: player_id,
-    action: action
-  }).then(data => {
+    team_id = req.body.team_id;
+  Promise.all([
+    PlayerController.update({
+      player_id: player_id,
+      action: { $set: { team: team_id } }
+    }),
+    TeamController.update({
+      action: { $pull: { players: player_id } }
+    }),
+    TeamController.update({
+      team_id: team_id,
+      action: { $push: { players: player_id } }
+    })
+  ]).then(data => {
     res.json(data);
   });
 });

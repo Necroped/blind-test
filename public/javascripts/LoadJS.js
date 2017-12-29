@@ -79,7 +79,7 @@ var LoadJS = function() {
 
 LoadJS.init = function() {
   var currentPage = $('#content').attr('data-page');
-  loadjs = new LoadJS();
+  loadjs = loadjs || new LoadJS();
   loadjs.getTeams();
   loadjs.getSongs();
   loadjs.getPlayers();

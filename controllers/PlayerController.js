@@ -22,7 +22,9 @@ PlayerController.getAll = data => {
 
 // Restrict access to root page
 PlayerController.update = data => {
-  return PlayerModel.update({ _id: data.player_id }, data.action);
+  let findOption = data.player_id ? { _id: data.player_id } : {};
+  let action = data.action ? data.action : {};
+  return PlayerModel.update(findOption, action);
 };
 
 module.exports = PlayerController;

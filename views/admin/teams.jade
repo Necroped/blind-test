@@ -10,16 +10,21 @@ table.table.table-hover.table-striped.table-bordered#teamsTable(style='width:100
       th Color
 input#username_hidden(type='hidden', value=admin.username)
 
-!{JSON.stringify(data)}
+!{JSON.stringify(teams)}
 
-.list-group
-  a.list-group-item.clearfix(onclick="alert('Action1 -> Details');")
-    | Action1
-    span.pull-right
-      span.btn.btn-xs.btn-default(onclick="alert('Action1 -> Play'); event.stopPropagation();")
-        span.glyphicon.glyphicon-play(aria-hidden='true')
-  a.list-group-item.clearfix(onclick="alert('Action2 -> Details');")
-    | Action2
-    span.pull-right
-      span.btn.btn-xs.btn-default(onclick="alert('Action2 -> Play'); event.stopPropagation();")
-        span.glyphicon.glyphicon-play(aria-hidden='true')
+#teamPanel
+  .panel.list-group
+    for team, i in teams
+      a.list-group-item(href='#', data-toggle='collapse', data-target='#list-' + i, data-parent='#teamPanel')
+        | #{team._id} - #{team.name} - #{team.color} 
+      if team.players.length > 0
+        for player in team.players
+          .sublinks.collapse(id='list-' + i)
+            a.list-group-item.small
+              span.glyphicon.glyphicon-chevron-right
+              |  #{player.username}
+      else
+        .sublinks.collapse(id='list-no')
+          a.list-group-item.small
+            span.glyphicon.glyphicon-chevron-right
+            | No player
