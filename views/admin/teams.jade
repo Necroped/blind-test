@@ -10,13 +10,14 @@ table.table.table-hover.table-striped.table-bordered#teamsTable(style='width:100
       th Color
 input#username_hidden(type='hidden', value=admin.username)
 
-!{JSON.stringify(teams)}
-
 #teamPanel
   .panel.list-group
     for team, i in teams
       a.list-group-item(href='#', data-toggle='collapse', data-target='#list-' + i, data-parent='#teamPanel')
-        | #{team._id} - #{team.name} - #{team.color} 
+        span.badge.badge-default.pull-right #{team.players.length}
+        span.glyphicon.glyphicon-stop(aria-hidden="true" style="margin-right:10px") 
+          span.glyphicon.glyphicon-stop(aria-hidden="true" style="position:absolute; top:2px; left:2px;font-size: 10px; color:#" + team.color) 
+        | #{team.name} 
       if team.players.length > 0
         for player in team.players
           .sublinks.collapse(id='list-' + i)
@@ -24,7 +25,7 @@ input#username_hidden(type='hidden', value=admin.username)
               span.glyphicon.glyphicon-chevron-right
               |  #{player.username}
       else
-        .sublinks.collapse(id='list-no')
+        .sublinks.collapse(id='list-' + i)
           a.list-group-item.small
             span.glyphicon.glyphicon-chevron-right
             | No player
