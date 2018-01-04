@@ -13,19 +13,44 @@ input#username_hidden(type='hidden', value=admin.username)
 #teamPanel
   .panel.list-group
     for team, i in teams
-      a.list-group-item(href='#', data-toggle='collapse', data-target='#list-' + i, data-parent='#teamPanel')
+      a.list-group-item.droppable(href='#', data-toggle='collapse', data-target='#list-' + i, data-parent='#teamPanel', data-teamid='' + team._id)
         span.badge.badge-default.pull-right #{team.players.length}
         span.glyphicon.glyphicon-stop(aria-hidden="true" style="margin-right:10px") 
           span.glyphicon.glyphicon-stop(aria-hidden="true" style="position:absolute; top:2px; left:2px;font-size: 10px; color:#" + team.color) 
         | #{team.name} 
       if team.players.length > 0
         for player in team.players
-          .sublinks.collapse(id='list-' + i)
+          div(id='list-' + i).sublinks.collapse.draggable(data-playerid='' +  player._id)
             a.list-group-item.small
               span.glyphicon.glyphicon-chevron-right
               |  #{player.username}
       else
-        .sublinks.collapse(id='list-' + i)
+        div(id='list-' + i).sublinks.collapse
           a.list-group-item.small
             span.glyphicon.glyphicon-chevron-right
             | No player
+
+script.
+  $(document).ready(function(){
+    $(".droppable").each(function(index, elem){
+      $(elem).droppable({ 
+        accept: ".draggable",
+        drop: function( event, ui ) { 
+          Ajax.playerUpdateTeam($(ui.draggable[0]).attr('data-playerid'), $(event.target).attr('data-teamid'));
+          ui.draggable[0].id = $(event.target).attr('data-target').slice(1);
+          $(ui.draggable[0]).insertAfter(event.target);
+        }
+      });
+    });
+    $(".draggable").each(function(index, elem){
+      $(elem).draggable({
+        classes: {
+          "ui-draggable-dragging": "active"
+        },
+        revert: "invalid",
+        containment: "document",
+        helper: "clone",
+        cursor: "move"
+      });
+    });
+  });

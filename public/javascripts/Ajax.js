@@ -1,15 +1,15 @@
 var Ajax = function() {};
 
-Ajax.playerUpdateTeam = function(id) {
-  var select = $('#' + id);
+Ajax.playerUpdateTeam = function(player_id, team_id) {
+  console.log(player_id, team_id);
   return $.ajax({
     dataType: 'json',
     url: '/api/player/update/team',
     contentType: 'application/json',
     type: 'POST',
     data: JSON.stringify({
-      player_id: id,
-      team_id: select.val()
+      player_id: player_id,
+      team_id: team_id
     })
   });
 };
