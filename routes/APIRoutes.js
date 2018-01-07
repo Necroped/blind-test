@@ -11,7 +11,7 @@ const express = require('express'),
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 router.get('/players/all', (req, res) => {
-  PlayerController.getAll().then(data => {
+  PlayerController.getAll(req.body).then(data => {
     res.json(data);
   });
 });

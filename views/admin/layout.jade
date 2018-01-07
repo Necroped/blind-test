@@ -62,16 +62,52 @@ html
       script(src='/javascripts/LoadJS.js')
       script(src='https://e-cdns-files.dzcdn.net/js/min/dz.js')
       script.
+        function createCookie(name,value,days) {
+          if (days) {
+              var date = new Date();
+              date.setTime(date.getTime()+(days*24*60*60*1000));
+              var expires = "; expires="+date.toGMTString();
+          }
+          else var expires = "";
+          document.cookie = name+"="+value+expires+"; path=/";
+        }
+
+        function readCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0;i < ca.length;i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+            }
+            return null;
+        }
+
+        function eraseCookie(name) {
+            createCookie(name,"",-1);
+        }
+
+      script.
+        $.ajax({
+          dataType: 'html',
+          url:      '/admin/' + readCookie("currentPage"),
+          type:     'GET',
+          success:  function(response) {
+            $('#content').html(response);
+            LoadJS.init();
+          }
+        });
         $(document).on('click', '[action="navigate"]', function () {
-            var page = $(this).attr('page');
-            $('#content').attr('data-page', page);
-            $.ajax({
-                dataType: 'html',
-                url:      '/admin/' + page,
-                type:     'GET',
-                success:  function(response) {
-                  $('#content').html(response);
-                  LoadJS.init();
-                }
-            });
+          var page =
+           $(this).attr('page');
+          createCookie("currentPage", page)//$('#content').attr('data-page', page);
+          $.ajax({
+            dataType: 'html',
+            url:      '/admin/' + page,
+            type:     'GET',
+            success:  function(response) {
+              $('#content').html(response);
+              LoadJS.init();
+            }
+          });
         });

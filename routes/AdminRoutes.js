@@ -22,13 +22,21 @@ router.get('/players', isAuthenticated, (req, res) => {
 });
 
 router.get('/teams', isAuthenticated, (req, res) => {
-  TeamController.getAll().then(teams => {
-    console.log(teams);
+  let playersWithoutTeam, teams;
+  Promise.all([
+    TeamController.getAll().then(data => {
+      teams = data;
+    }),
+    PlayerController.getAll({ team: { $exists: false }}).then(data => {
+      playersWithoutTeam = data;
+    })
+  ]).then(data => {
     res.render('admin/teams', {
       admin: req.user,
-      teams: teams
+      teams: teams,
+      playersWithoutTeam : playersWithoutTeam
     });
-  });
+  })
 });
 
 router.get('/songs', isAuthenticated, (req, res) => {

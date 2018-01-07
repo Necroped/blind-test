@@ -42,6 +42,29 @@ var LoadJS = function() {
   };
 
   this.initTeams = function() {
+    Ajax.players({team : {exists : false}}).done(function (players) {
+      var noteamMain = $('<div>').addClass('panel panel-default');
+      var noTeamHeading = $('<div>').addClass('panel panel-heading').html('NO TEA% PLAYERS');
+      var noTeamBody = $('<div>').addClass('panel-body');
+      for(player in players) {
+        var playerLabel = $('<h3>').addClass('draggable').css('margin:0px');
+        playerLabel.attr('data-playerid', player._id);
+        var playerSpan = $('<span>').addClass('label label-default').html('' + player.usernaùe);
+        playerLabel.append(playerSpan);
+        noTeamBody.append(playerLabel);
+      }
+      noteamMain.append(noTeamHeading);
+      noteamMain.append(noTeamBody);
+      $('#teamsContent').append(noteamMain);
+    });
+
+/* .panel.panel -default */
+/* .panel - heading NO TEAM PLAYERS */
+/* .panel - body */
+/* for player in playersWithoutTeam */
+/* h3.draggable(style = 'margin:0px', data - playerid='' + player._id) */
+/* span.label.label -default #{ player.username } */
+
     Datatables.initTeams('#teamsTable');
     $('#create_team').click(function() {
       Ajax.teamCreate({
@@ -78,7 +101,7 @@ var LoadJS = function() {
 };
 
 LoadJS.init = function() {
-  var currentPage = $('#content').attr('data-page');
+  var currentPage = readCookie("currentPage");//$('#content').attr('data-page');
   loadjs = loadjs || new LoadJS();
   loadjs.getTeams();
   loadjs.getSongs();

@@ -22,11 +22,12 @@ Ajax.teams = function() {
   });
 };
 
-Ajax.players = function() {
+Ajax.players = function(data) {
   return $.ajax({
     dataType: 'json',
     url: '/api/players/all',
-    type: 'GET'
+    type: 'GET',
+    data : data
   });
 };
 
