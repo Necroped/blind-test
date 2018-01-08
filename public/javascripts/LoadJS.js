@@ -7,19 +7,19 @@ var LoadJS = function() {
   this.players = [];
 
   this.getTeams = function() {
-    Ajax.teams().done(function(data) {
+    Ajax.JSON.teams().done(function(data) {
       _this.teams = data;
     });
   };
 
   this.getSongs = function() {
-    Ajax.songs().done(function(data) {
+    Ajax.JSON.songs().done(function(data) {
       _this.songs = data;
     });
   };
 
   this.getPlayers = function() {
-    Ajax.players().done(function(data) {
+    Ajax.JSON.players().done(function(data) {
       _this.players = data;
     });
   };
@@ -28,7 +28,7 @@ var LoadJS = function() {
     Datatables.initSearchSongs('#searchSongsTable');
     $('#search_song_input').on('keyup', function() {
       if (Datatables.searchsongs && $(this).val().length >= 3) {
-        Datatables.searchsongs.ajax.reload();
+        Datatables.searchsongs.ajax.JSON.reload();
       }
     });
   };
@@ -42,37 +42,49 @@ var LoadJS = function() {
   };
 
   this.initTeams = function() {
-    Ajax.players({team : {exists : false}}).done(function (players) {
-      var noteamMain = $('<div>').addClass('panel panel-default');
-      var noTeamHeading = $('<div>').addClass('panel panel-heading').html('NO TEA% PLAYERS');
-      var noTeamBody = $('<div>').addClass('panel-body');
-      for(player in players) {
-        var playerLabel = $('<h3>').addClass('draggable').css('margin:0px');
-        playerLabel.attr('data-playerid', player._id);
-        var playerSpan = $('<span>').addClass('label label-default').html('' + player.usernaùe);
-        playerLabel.append(playerSpan);
-        noTeamBody.append(playerLabel);
-      }
-      noteamMain.append(noTeamHeading);
-      noteamMain.append(noTeamBody);
-      $('#teamsContent').append(noteamMain);
+    console.log('initTeams');
+    $('#teamsContent').html('');
+    Ajax.template
+      .playersNoTeam({ team: { exists: false } })
+      .done(function(content) {
+        $('#teamsContent').append(content);
+      });
+    Ajax.template.teams({ team: { exists: true } }).done(function(content) {
+      $('#teamsContent').append(content);
+    });
+    $('.droppable').each(function(index, elem) {
+      $(elem).droppable({
+        accept: '.draggable',
+        drop: function(event, ui) {
+          console.log('drop it');
+          Ajax.JSON.playerUpdateTeam(
+            $(ui.draggable[0]).attr('data-playerid'),
+            $(event.target).attr('data-teamid')
+          );
+          loadjs.initTeams();
+        }
+      });
+    });
+    $('.draggable').each(function(index, elem) {
+      $(elem).draggable({
+        classes: {
+          'ui-draggable-dragging': 'active'
+        },
+        revert: 'invalid',
+        containment: 'document',
+        helper: 'clone',
+        cursor: 'move'
+      });
     });
 
-/* .panel.panel -default */
-/* .panel - heading NO TEAM PLAYERS */
-/* .panel - body */
-/* for player in playersWithoutTeam */
-/* h3.draggable(style = 'margin:0px', data - playerid='' + player._id) */
-/* span.label.label -default #{ player.username } */
-
-    Datatables.initTeams('#teamsTable');
+    //Datatables.initTeams('#teamsTable');
     $('#create_team').click(function() {
-      Ajax.teamCreate({
+      Ajax.JSON.teamCreate({
         name: $('#create_team_name').val(),
         color: $('#create_team_color').val()
       })
         .done(function(data) {
-          Datatables.teams.ajax.reload();
+          loadjs.initTeams();
         })
         .fail(function(err, data) {
           alert('ERROR : ' + JSON.stringify(err));
@@ -82,26 +94,26 @@ var LoadJS = function() {
 
   this.songAdd = function(data) {
     var songsAddedId = data.externalId;
-    Ajax.songAdd(data).done(function() {
+    Ajax.JSON.songAdd(data).done(function() {
       loadjs.getSongs();
       Musicplayer.tracks.add(songsAddedId);
-      Datatables.songs.ajax.reload();
-      Datatables.searchsongs.ajax.reload();
+      Datatables.songs.ajax.JSON.reload();
+      Datatables.searchsongs.ajax.JSON.reload();
     });
   };
   this.songRemove = function(data) {
     var trackId = data.externalId;
-    Ajax.songRemove(data).done(function() {
+    Ajax.JSON.songRemove(data).done(function() {
       loadjs.getSongs();
       Musicplayer.tracks.remove(trackId);
-      Datatables.songs.ajax.reload();
-      Datatables.searchsongs.ajax.reload();
+      Datatables.songs.ajax.JSON.reload();
+      Datatables.searchsongs.ajax.JSON.reload();
     });
   };
 };
 
 LoadJS.init = function() {
-  var currentPage = readCookie("currentPage");//$('#content').attr('data-page');
+  var currentPage = readCookie('currentPage'); //$('#content').attr('data-page');
   loadjs = loadjs || new LoadJS();
   loadjs.getTeams();
   loadjs.getSongs();

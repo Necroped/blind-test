@@ -98,8 +98,7 @@ html
           }
         });
         $(document).on('click', '[action="navigate"]', function () {
-          var page =
-           $(this).attr('page');
+          var page = $(this).attr('page');
           createCookie("currentPage", page)//$('#content').attr('data-page', page);
           $.ajax({
             dataType: 'html',

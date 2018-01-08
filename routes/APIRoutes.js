@@ -42,6 +42,22 @@ router.post('/player/get', (req, res) => {
   });
 });
 
+router.get('/players/noteam', (req, res) => {
+  PlayerController.getAll(req.body).then(players => {
+    res.render('admin/playersNoTeam', {
+      players: players
+    });
+  });
+});
+
+router.get('/teams', (req, res) => {
+  TeamController.getAll(req.body).then(teams => {
+    res.render('admin/teamsContent', {
+      teams: teams
+    });
+  });
+});
+
 router.post('/modal', (req, res) => {
   res.render('admin/modals/' + req.body.modal, req.body.params);
 });
@@ -53,6 +69,7 @@ router.post('/modal', (req, res) => {
 router.post('/player/update/team', (req, res) => {
   let player_id = req.body.player_id,
     team_id = req.body.team_id;
+  console.log(player_id, team_id);
   Promise.all([
     PlayerController.update({
       player_id: player_id,

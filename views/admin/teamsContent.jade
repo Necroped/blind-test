@@ -1,0 +1,19 @@
+#teamPanel
+  .panel.list-group
+    for team, i in teams
+      a.list-group-item.droppable(href='#', data-toggle='collapse', data-target='#list-' + i)
+        span.badge.badge-default.pull-right #{team.players.length}
+        span.glyphicon.glyphicon-stop(aria-hidden="true" style="margin-right:10px") 
+          span.glyphicon.glyphicon-stop(aria-hidden="true" style="position:absolute; top:2px; left:2px;font-size: 10px; color:#" + team.color) 
+        | #{team.name} 
+      if team.players.length > 0
+        for player in team.players
+          div(id='list-' + i, data-playerid='' +  player._id).sublinks.collapse            
+            a.list-group-item.small
+              span.glyphicon.glyphicon-chevron-right
+              |  #{player.username}
+      else
+        div(id='list-' + i).sublinks.collapse
+          a.list-group-item.small
+            span.glyphicon.glyphicon-chevron-right
+            | No player

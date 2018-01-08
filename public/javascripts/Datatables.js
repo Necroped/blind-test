@@ -198,7 +198,10 @@ Datatables.initPlayers = function(selector) {
             var sel = $('<select>').attr('value', data);
             sel.attr('id', row._id);
             sel.addClass('form-control');
-            sel.attr('onchange', 'Ajax.playerUpdateTeam("' + row._id + '")');
+            sel.attr(
+              'onchange',
+              'Ajax.JSON.playerUpdateTeam("' + row._id + '")'
+            );
             sel.append(
               $('<option>')
                 .attr('value', '')

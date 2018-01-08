@@ -17,20 +17,22 @@ socket.emit('admin/connected', {
 socket.on('player/click', data => {
   var time = data.time;
   Musicplayer.pause;
-  Ajax.getPlayer({
+  Ajax.JSON.getPlayer({
     _id: data.player_id
   }).done(function(player) {
     $('#answer_modal').remove();
-    Ajax.getModal('answer', {
-      player: player,
-      time: time,
-      track: Musicplayer.getCurrentTrack()
-    }).done(function(modal) {
-      $('#modals').append(modal);
-      $('#answer_modal').modal();
-      $('#answer_modal').on('hidden.bs.modal', function() {
-        Musicplayer.next();
+    Ajax.template
+      .getModal('answer', {
+        player: player,
+        time: time,
+        track: Musicplayer.getCurrentTrack()
+      })
+      .done(function(modal) {
+        $('#modals').append(modal);
+        $('#answer_modal').modal();
+        $('#answer_modal').on('hidden.bs.modal', function() {
+          Musicplayer.next();
+        });
       });
-    });
   });
 });

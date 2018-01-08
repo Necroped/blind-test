@@ -1,0 +1,6 @@
+.panel.panel-default
+  .panel-heading NO TEAM PLAYERS
+  .panel-body
+    for player in players
+      h3.draggable(style='margin:0px', data-playerid='' +  player._id)
+        span.label.label-default #{player.username}

@@ -1,7 +1,8 @@
-var Ajax = function() {};
+var Ajax = {};
+Ajax.template = {};
+Ajax.JSON = {};
 
-Ajax.playerUpdateTeam = function(player_id, team_id) {
-  console.log(player_id, team_id);
+Ajax.JSON.playerUpdateTeam = function(player_id, team_id) {
   return $.ajax({
     dataType: 'json',
     url: '/api/player/update/team',
@@ -14,7 +15,7 @@ Ajax.playerUpdateTeam = function(player_id, team_id) {
   });
 };
 
-Ajax.teams = function() {
+Ajax.JSON.teams = function() {
   return $.ajax({
     dataType: 'json',
     url: '/api/teams/all',
@@ -22,16 +23,34 @@ Ajax.teams = function() {
   });
 };
 
-Ajax.players = function(data) {
+Ajax.JSON.players = function(data) {
   return $.ajax({
     dataType: 'json',
     url: '/api/players/all',
     type: 'GET',
-    data : data
+    data: data
   });
 };
 
-Ajax.songs = function() {
+Ajax.template.playersNoTeam = function(data) {
+  return $.ajax({
+    dataType: 'html',
+    url: '/api/players/noteam',
+    type: 'GET',
+    data: data
+  });
+};
+
+Ajax.template.teams = function(data) {
+  return $.ajax({
+    dataType: 'html',
+    url: '/api/teams',
+    type: 'GET',
+    data: data
+  });
+};
+
+Ajax.JSON.songs = function() {
   return $.ajax({
     dataType: 'json',
     url: '/api/songs/all',
@@ -39,7 +58,7 @@ Ajax.songs = function() {
   });
 };
 
-Ajax.songAdd = function(data) {
+Ajax.JSON.songAdd = function(data) {
   return $.ajax({
     dataType: 'json',
     url: '/api/song/add',
@@ -54,7 +73,7 @@ Ajax.songAdd = function(data) {
   });
 };
 
-Ajax.songRemove = function(data) {
+Ajax.JSON.songRemove = function(data) {
   return $.ajax({
     dataType: 'json',
     url: '/api/song/remove',
@@ -66,7 +85,7 @@ Ajax.songRemove = function(data) {
   });
 };
 
-Ajax.teamCreate = function(data) {
+Ajax.JSON.teamCreate = function(data) {
   return $.ajax({
     dataType: 'json',
     url: '/api/teams/create',
@@ -79,7 +98,7 @@ Ajax.teamCreate = function(data) {
   });
 };
 
-Ajax.getPlayer = function(data) {
+Ajax.JSON.getPlayer = function(data) {
   return $.ajax({
     dataType: 'json',
     url: '/api/player/get',
@@ -92,7 +111,7 @@ Ajax.getPlayer = function(data) {
 };
 
 Ajax.getModal = function(modalName, params) {
-  console.log(modalName);
+  cons.templateole.log(modalName);
   return $.ajax({
     dataType: 'html',
     url: '/api/modal',
